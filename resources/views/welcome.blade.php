@@ -2,8 +2,9 @@
 @section('title','Bienvenido')
 
 @section('content')
-
-    <h1 class="">Bienvenido al sistema SISTEC</h1>
-    <h3 class="center-align">Panel de Control</h3>
+    <div class="row container">
+        <h1>Lorem IPSUM SISTEC</h1>
+        <h3>Panel de Control</h3>
+    </div>
 
 @endsection

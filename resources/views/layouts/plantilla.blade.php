@@ -12,19 +12,8 @@
        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
        <!-- Compiled and minified JavaScript -->
        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-       @vite('resources/app.css')
-       @vite('resources/app.js')
-
-       <style>
-            main, footer {
-              padding-left: 300px;
-            }
-            @media only screen and (max-width : 992px) {
-            header, main, footer {
-                padding-left: 0;
-              }
-            }
-       </style>
+       @vite(['resources/css/app.css','resources/js/app.js'])
+       @stack('styles')
 </head>
 <body>
     {{-- Plantilla a extender --}}
@@ -34,12 +23,14 @@
     </header>
 
     <main>
-        @include('components/sidenav')
+        @include('components.sidenav')
         @yield('content')
     </main>
 
 
+    <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
     @stack('scripts')
+
     <script>
         
     </script>

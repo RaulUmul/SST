@@ -14,13 +14,13 @@ use App\Http\Controllers\EquipoController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Inicio Sistec
+Route::view('/','welcome')->name('sistec.index');
 
 
 // Ingreso de Equipos
 
 Route::controller(EquipoController::class)->group(function(){
+  Route::get('/equipo/','index')->name('equipo.index');
   Route::get('/equipo/create','create')->name('equipo.create');
 });
