@@ -27,16 +27,159 @@
             <a href="{{route('equipo.create')}}" class="btn btn-small"><i class="right material-icons">add</i>Ingresar</a>
         </div>
     </div>
-    <div class="col s12">
-    <div class="divider"></div>
-    </div>
+    @include('partials.divider')
     {{-- Tabla de Los equipos en cola.... --}}
     <div class="col s12">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae nisi natus velit animi amet voluptatum nam, corrupti dolor vero at porro accusantium laboriosam officia cupiditate sed magni dolorem ipsam est?
+        <table id="table-equipos" style="width: 100%">
+            <thead>
+            <tr>
+              <th>Tecnico Ingresa</th>
+              <th>Tecnico Asignado</th>
+              <th>Tipo</th>
+              <th>Serie</th>
+              <th>Marca</th>
+              <th>Estado</th>
+              <th>Dependencia Policial</th>
+              <th>Acciones</th>
+            </tr>
+            </thead>
+          </table>
     </div>
 
 </div>
 @endsection
+@push('scripts')
+<script>
+    $(document).ready(function () {
+        $.ajax({
+      //   Vamos a consultar la data de equipos.
+        url:"{{route('equipo.showEquipos')}}",
+        type: 'get',
+        dataType: 'json',
+        data:{},
+        beforeSend: function (){},
+        success: function (resp) {
+          let { data } = resp.equipos;
+          console.log(resp.equipos);
+          var tablaArmas = $('#table-equipos').addClass('nowrap').DataTable({
+            responsive: true,
+            "pageLength": 5,
+            "order": [ 0, 'desc' ],
+            data: resp.equipos,
+            columns: [
+              {data: 'id_equipo'}, // Tecnico ingresa
+              {data: 'id_equipo'}, //Tecnico asignado
+              {data: 'id_tipo_equipo',render: function(data){
+                let descripcion;
+                resp.tipo_equipo.map((tipo)=>{
+                    if(data === tipo.id_item){descripcion = tipo.descripcion};
+                });
+                return descripcion;
+              }}, // Tipo
+              {data: 'numero_serie'}, // Serie
+              {data: 'marca'}, // Marca
+              {data: 'id_estado_equipo',render: function(data){
+                let descripcion;
+                resp.estado_equipo.map((estado)=>{
+                    if(data === estado.id_item){descripcion = estado.descripcion};
+                });
+                return descripcion;
+              }}, //Estado
+              {data: 'dependencia_policial'}, //Estado
+              {data: null}, //Acciones
+            //   {data: 'id_tipo_arma',render: function (data){
+            //     let descripcion;
+            //     resp.tipo_arma.map((tipo)=>{
+            //       if(data === tipo.id_item){descripcion = tipo.descripcion};
+            //     });
+            //     return descripcion;
+            //   }},
+            //   {data: 'id_marca_arma', render: function (data){
+            //       let descripcion;
+            //       resp.marca_arma.map((tipo)=>{
+            //         if(data === tipo.id_item){descripcion = tipo.descripcion};
+            //       });
+            //       return descripcion;
+            //     }},
+            //   {data: 'modelo_arma'},
+            //   {data: 'id_calibre', render: function (data){
+            //     let descripcion;
+            //     resp.calibre_arma.map((tipo)=>{
+            //       if(data === tipo.id_item){descripcion = tipo.descripcion}
+            //     });
+            //     if(descripcion == null){
+            //       return null;
+            //     }else{
+            //       return descripcion;
+            //     }
+            //   }},
+            //   {data: 'licencia'},
+            //   {data: 'tenencia'},
+            //   {data: 'registro'},
+            //   {data: 'id_estatus_arma',render: function (data){
+            //       let descripcion;
+            //       resp.estado_arma.map((tipo)=>{
+            //         if(data === tipo.id_item){descripcion = tipo.descripcion}
+            //       });
+            //       return descripcion;
+            //     }},
+            //   null
+            ],
+            // select: true,
+            dom: 'Brtip',
+            columnDefs:[
+                {target: 2 ,responsivePriority: 1},
+                {target: 3 ,responsivePriority: 2},
+              {
+                target: -1,
+                responsivePriority: 3,
+                visible: true,
+                data: 'id_equipo',
+                orderable: false,
+                render: function ( data, type, row, meta ) {
+                  
+                 return  `
+                 <form action="{{route('equipo.show')}}">
+                 <input type="hidden" name="id_equipo" value="${data.id_equipo}">
+                 <button type="submit" class="btn"> <i class="material-icons">visibility</i></button>
+                 </form>
+                 `;
+                }
+              }
+            ],
+            // "bDestroy": true
+          });
+
+        //   $('#filter-registro').on('keyup',function (){
+        //     tablaArmas.columns(7).search(this.value).draw(); // Columna 8 -> registro arma
+        //   });
+
+        //   $('#tipo_arma').on('change',function (){
+        //     let tipo_arma = $('#tipo_arma option:selected').text();
+        //     if(tipo_arma == "N/I"){
+        //       tipo_arma = "";
+        //     }
+        //     tablaArmas.columns(1).search(tipo_arma).draw();
+        //   });
+
+        //   $('#estado_arma').on('change',function (){
+        //     let estado_arma = $('#estado_arma option:selected').text();
+        //     if(estado_arma == "N/I"){
+        //       estado_arma = "";
+        //     }
+        //     tablaArmas.columns(8).search(estado_arma).draw(); //Columna 8 -> estado arma
+        //   });
+
+        },
+        error: function (response){
+          console.log(response)
+        },
+      });
+    });
+
+</script>
+@endpush
+
 
 
 

@@ -8,6 +8,9 @@ main, footer {
     padding-left: 300px;
 }
 
+h2,h3,h4{
+    font-size: medium;
+}
 
 
 .contenedor-sidenav{
@@ -20,7 +23,7 @@ main, footer {
 }
 
 .sidenav{
-    z-index: -100;
+    z-index: 0;
 }
 
 .tabs .indicator {
@@ -40,6 +43,11 @@ main, footer {
 .labelMod>label{
     color: #263238;
     font-size: 1.5rem;
+}
+.servicios-content{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 /* Media Querys */
 

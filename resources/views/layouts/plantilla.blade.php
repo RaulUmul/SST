@@ -10,13 +10,57 @@
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
        {{-- Material Icons --}}
        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-       <!-- Compiled and minified JavaScript -->
-       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+       {{--  Style de Datatable--}}
+       <link rel="stylesheet" href="{{asset('css/datatables.min.css')}}">
        @vite(['resources/css/app.css','resources/js/app.js'])
        @stack('styles')
 </head>
 <body>
     {{-- Plantilla a extender --}}
+
+    @if (session('success'))
+        <div id="modal_success" class="modal">
+          <div class="modal-content center">
+            <h4>{{ session('success') }}</h4>
+          </div>
+          <div class="modal-footer">
+            <div class="col s12" style="display: flex; justify-content: space-around;">
+                <a  class="waves-light btn modal-close">
+                  Aceptar
+                  <i class="large material-icons right">check</i>
+                </a>
+            </div>
+          </div>
+        </div>
+        @push('scripts')
+          <script>
+              $('.modal').modal();
+              $('#modal_success').modal('open');
+          </script>
+        @endpush
+    @endif
+
+    @if (session('error'))
+        <div id="modal_error" class="modal">
+          <div class="modal-content center">
+            <h4>{{ session('error') }}</h4>
+          </div>
+          <div class="modal-footer">
+            <div class="col s12" style="display: flex; justify-content: space-around;">
+                <a  class="waves-light btn modal-close">
+                  Aceptar
+                  <i class="large material-icons right">check</i>
+                </a>
+            </div>
+          </div>
+        </div>
+        @push('scripts')
+          <script>
+              $('.modal').modal();
+              $('#modal_error').modal('open');
+          </script>
+        @endpush
+    @endif     
 
     <header class="navbar-fixed">
         @include('components/navbar')
@@ -27,12 +71,12 @@
         @yield('content')
     </main>
 
-
+    {{-- <!-- Compiled and minified JavaScript --> --}}
     <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    {{--  Scripts DataTables--}}
+    <script src="{{ asset('js/datatables.min.js') }}"></script>
     @stack('scripts')
 
-    <script>
-        
-    </script>
 </body>
 </html>
