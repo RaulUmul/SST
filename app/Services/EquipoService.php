@@ -77,10 +77,10 @@ class EquipoService{
     return  $equipo->exists() ? true : false;
   }
 
-  public function updateEstado(Request $request){
+  public function updateEstado($id_equipo,$estado){
     
-    $equipo = Equipo::find($request->id_equipo);
-      $equipo->id_estado_equipo = 16;
+    $equipo = Equipo::find($id_equipo);
+      $equipo->id_estado_equipo = $estado;
     $equipo->save();
 
   }

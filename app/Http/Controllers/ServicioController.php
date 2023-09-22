@@ -41,17 +41,19 @@ class ServicioController extends Controller
             // Eliminamos el servicio actual del arreglo, ya que ya finalizo
             // Y debe unicamente interactuar con los actuales.
 
-            $servicio = Servicio::where('id_servicio',$request->actual)
-            ->where('id_equipo',$servicio_actualizar->id_equipo)
+            $servicio = Servicio::where('id_equipo',$servicio_actualizar->id_equipo)
             ->whereNot('id_estado_servicio',22)
             ->orderBy('id_servicio','asc')
-            ->get();
+            ->get()
+            ->toArray();
+
+            // dd($request->actual,$servicio);
+
             // Domingo, me quede aqui...
             foreach($servicio as $key => $value){
                 if($value["id_servicio"] === $request->actual) unset($servicio[$key]);
             }   
 
-            // dd($request->actual,$servicio);
             if($servicio != null){
                 $servicio = array_values($servicio);
                 $servicio_actualizar = $servicio[0];
@@ -59,14 +61,15 @@ class ServicioController extends Controller
                 // Si esta vacio el listado de servicios, hemos terminado los servicios.
                 // Dejamos a servicio actualizar como el activo.
                 // Procedemos a cambiar el estatus del equipo a finalizado...
-                dd($servicio_actualizar->id_equipo);
-                $equipoService->updateEstado($servicio_actualizar->id_equipo);
+                // dd($servicio_actualizar->id_equipo);
+                $estado = 16;
+                $equipoService->updateEstado($servicio_actualizar->id_equipo, $estado);
             }
 
             // Asignamos a servicio actual al siguiente arreglo en $servicio.
         }
 
-        return response()->json(['servicio_actual'=>$servicio_actualizar,'servicio'=>$servicio],200);
+        // return response()->json(['servicio_actual'=>$servicio_actualizar,'servicio'=>$servicio],200);
     }
 
 }

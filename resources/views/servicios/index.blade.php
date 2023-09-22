@@ -30,7 +30,7 @@
     <div class="col s12">
       <p>Correccion</p>
     </div>
-    <div class="col s12 center-align">
+    <div class="col s12 center-align btns_time">
       <a href="#!" onclick="registraTimeStamp(this)" class="green btn">Iniciar <i class="left material-icons">play_circle</i></a>
       <a href="#!" onclick="registraTimeStamp(this)" class="red btn">Finalizar <i class="left material-icons">stop_circle</i></a>
       {{-- El resumen debe de activarse hasta que finalice el mantenimiento --}}
@@ -64,6 +64,11 @@
     </div>
   </div>
 </form>
+{{-- Cada que finaliza, vamos a redirigirlo al form de detalle del equipo--}}
+<form action="{{route('equipo.show')}}" id="detalleEquipo">
+  <input type="hidden" name="id_equipo" value="{{$data['id_equipo']}}">
+  <button type="submit" class="btn" style="display: none"></button>
+</form>
 @endsection
 
 @push('scripts')
@@ -75,7 +80,6 @@
         console.log('No existe tecnico asignado');
       }
 
-      console.log(servicio_actual);
 
       // Hay que tener mucho cuidado con lo siguiente. Ya que si cambia el catalog esencialmente, afectara el comportamiento.
       // Por lo que si no coincide algo es por ello y solo es de ajustar las variables.
@@ -85,9 +89,11 @@
       servicio_actual.id_tipo_servicio  == 13 && onlyDictamen($('#mantenimiento'),$('#correccion'));
 
       servicio_actual.fecha_inicio  != null && desHabilitarBtn($('#mantenimiento .btns_time a.green'));
+      servicio_actual.fecha_inicio  != null && desHabilitarBtn($('#correccion .btns_time a.green'));
+      servicio_actual.fecha_finalizacion  != null && desHabilitarBtn($('#correccion .btns_time a.red'));
+      servicio_actual.fecha_finalizacion  != null && desHabilitarBtn($('#mantenimiento .btns_time a.red'));
 
       function desHabilitarBtn(obj){
-        console.log(obj);
         obj.addClass('disabled');
       }
       
@@ -119,15 +125,9 @@
             servicio,
             actual
           },
-          dataType: "json",
+          dataType: "text",
           success: function (response) {
-            console.log(response);
-            // servicio_actual.id_tipo_servicio  == 11 && desHabilitar($('#correccion'));
-            // servicio_actual.id_tipo_servicio  == 12 && desHabilitar($('#mantenimiento'));
-            // servicio_actual.id_tipo_servicio  == 13 && onlyDictamen($('#mantenimiento'),$('#correccion'));
-            window.history.go(-1);
-
-            window.history.back();
+            $('#detalleEquipo').submit();
           },
           error: function (response){
             console.log(response);

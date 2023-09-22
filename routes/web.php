@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\QrCodeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +37,14 @@ Route::controller(ServicioController::class)->group(function(){
   Route::get('/equipo/servicios','index')->name('servicio.index');
   Route::get('/equipo/servicios/update','update')->name('servicio.update');
 });
+
+// Control de QR code
+
+Route::controller(QrCodeController::class)->group(function(){
+  Route::get('/qrhome','index')->name('qr.index');
+  Route::get('/qrcrear','create')->name('qr.create');
+  Route::get('/qrgenerado','show')->name('qr.show');
+});
+
+
 

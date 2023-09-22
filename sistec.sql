@@ -1,4 +1,4 @@
--- Active: 1687187123110@@127.0.0.1@5432@sgticst@sistec
+-- Active: 1695306407955@@127.0.0.1@5432@stsgtic@sistec
 
 DROP TABLE IF EXISTS sistec.historial;
 DROP TABLE IF EXISTS sistec.servicio;
@@ -20,7 +20,8 @@ VALUES
   (3,'Estado equipo'), --listo
   (4,'Estado ticket'), --listo
   (5,'Estado servicio'), --listo
-  (6,'Tipo usuario') --listo
+  (6,'Tipo usuario'), --listo
+  (7,'Tipo archivo') --listo
 ;
 -- TABLA ITEM
 CREATE TABLE sistec.item(
@@ -56,7 +57,9 @@ VALUES
   (22,'Finalizado',5),
   (23,'Tecnico',6),
   (24,'Administrador',6),
-  (25,'Visitante',6)
+  (25,'Visitante',6),
+  (26,'Dictamen',7),
+  (27,'QR',7)
 ;
 
 

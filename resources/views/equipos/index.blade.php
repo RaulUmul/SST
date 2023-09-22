@@ -139,10 +139,21 @@
                 render: function ( data, type, row, meta ) {
                   
                  return  `
-                 <form action="{{route('equipo.show')}}">
-                 <input type="hidden" name="id_equipo" value="${data.id_equipo}">
-                 <button type="submit" class="btn"> <i class="material-icons">visibility</i></button>
-                 </form>
+                 <div class="row">
+                  <div class="col s6">
+                   <form action="{{route('equipo.show')}}">
+                     <input type="hidden" name="id_equipo" value="${data.id_equipo}">
+                     <button type="submit" class="btn"> <i class="material-icons">visibility</i></button>
+                     </form>
+                  </div>
+
+                  <div class="col s6">
+                  <form action="{{route('qr.index')}}">
+                  <input type="hidden" name="id_equipo" value="${data.id_equipo}">
+                  <button type="submit" class="btn"> <i class="material-icons">qr_code</i></button>
+                  </form>
+                  </div>
+                 </div>
                  `;
                 }
               }
