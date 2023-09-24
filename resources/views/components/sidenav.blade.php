@@ -23,7 +23,7 @@
         </li>
         <li class="row center">
             <div class="col s12">
-                <a href="#!" class="btn"><i class="left material-icons">qr_code</i>Busqueda por QR</a>
+                <a href="{{route('qr.search')}}" class="btn"><i class="left material-icons">qr_code</i>Busqueda por QR</a>
             </div>
         </li>
         {{-- <li><a class="subheader">Subheader</a></li> --}}

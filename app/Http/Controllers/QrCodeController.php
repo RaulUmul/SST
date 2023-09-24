@@ -56,4 +56,8 @@ class QrCodeController extends Controller
     public function show(){
 
     }
+
+    public function search(){
+        return view('qr.search');
+    }
 }

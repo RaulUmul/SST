@@ -44,6 +44,7 @@ Route::controller(QrCodeController::class)->group(function(){
   Route::get('/qrhome','index')->name('qr.index');
   Route::get('/qrcrear','create')->name('qr.create');
   Route::get('/qrgenerado','show')->name('qr.show');
+  Route::get('/qrsearch','search')->name('qr.search');
 });
 
 

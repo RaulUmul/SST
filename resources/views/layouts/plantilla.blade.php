@@ -12,7 +12,8 @@
        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
        {{--  Style de Datatable--}}
        <link rel="stylesheet" href="{{asset('css/datatables.min.css')}}">
-       @vite(['resources/css/app.css','resources/js/app.js'])
+       <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+        @vite(['resources/css/app.css','resources/js/app.js'])
        @stack('styles')
 </head>
 <body>
