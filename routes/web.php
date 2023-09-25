@@ -19,6 +19,7 @@ use App\Http\Controllers\QrCodeController;
 // Inicio Sistec
 Route::view('/','welcome')->name('sistec.index');
 
+Route::view('/login','login.login')->name('sistec.login');
 
 // Ingreso de Equipos
 
