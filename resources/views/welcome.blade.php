@@ -3,8 +3,13 @@
 
 @section('content')
     <div class="row container">
-        <h1>Lorem IPSUM SISTEC</h1>
-        <h3>Panel de Control</h3>
+
+        <div class="col s12 center-align">
+            <h1 style="font-size: 2rem"><strong>SISTEMA DE SERVICIOS TECNICOS - SISTEC</strong></h1>
+        </div>
+        <div class="col s12 center-align">
+            <h3>UN VIDEO DE PRESENTACION DEL PROYECTO - PILOTO</h3>
+        </div>
     </div>
 
 @endsection

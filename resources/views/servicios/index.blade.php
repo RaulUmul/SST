@@ -7,6 +7,7 @@
 {{-- Vamos a crear 3 formularios --}}
 {{-- Y solo vamos a sustituir segun venga los arreglos de servicio y servicio_actual --}}
 {{-- A jugar con los gatos pes T.T --}}
+{{-- @dd($data) --}}
 <form action="" id="mantenimiento">
   <div class="row container">
     <div class="col s12">
@@ -43,27 +44,80 @@
   </div>
 </form>
 {{-- Form Dictamen --}}
-<form action="" id="dictamen">
+@empty($archivo)
+    
+  <form action="{{route('archivo.dictamen')}}" method="post" id="dictamen" enctype="multipart/form-data">
+
+    @csrf
+    <input type="hidden" name="id_equipo" value="{{$data->id_equipo}}">
+    <input type="hidden" name="id_ticket" value="{{$data->id_ticket}}">
+
+    <div class="row container">
+      <div class="col s12">
+        <p>Dictamen</p>
+      </div>
+      <div class="col s12 center-align">
+        {{-- <a href="#!" class="btn">Guardar</a> --}}
+        {{-- El resumen debe de activarse hasta que finalice el mantenimiento --}}
+        <div class="file-field input-field">
+          <div class="btn">
+            <span><i class="left material-icons">upload_file</i>Adjuntar</span>
+            <input type="file" name="file" id="file">
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
+          </div>
+        </div>
+      </div>
+      <div class="col s12 center-align">
+        <button class="btn" type="submit" style="width: 100%">
+          Guardar 
+          <i class="material-icons right">save</i>
+        </button>
+      </div>
+    </div>
+  </form>
+
+@else
+
+<form action="{{route('update.dictamen')}}" method="post" id="dictamen" enctype="multipart/form-data">
+
+  @csrf
+  <input type="hidden" name="id_equipo" value="{{$data->id_equipo}}">
+  <input type="hidden" name="id_ticket" value="{{$data->id_ticket}}">
+
   <div class="row container">
     <div class="col s12">
       <p>Dictamen</p>
     </div>
     <div class="col s12 center-align">
-
       {{-- <a href="#!" class="btn">Guardar</a> --}}
       {{-- El resumen debe de activarse hasta que finalice el mantenimiento --}}
       <div class="file-field input-field">
         <div class="btn">
           <span><i class="left material-icons">upload_file</i>Adjuntar</span>
-          <input type="file">
+          <input type="file" name="file" id="file" >
         </div>
         <div class="file-path-wrapper">
-          <input class="file-path validate" type="text">
+          <input class="file-path validate" type="text" value="{{$archivo->nombre}}">
         </div>
       </div>
     </div>
+    <div class="col s12 center-align">
+      <button class="btn" type="submit" style="width: 100%">
+        Actualizar 
+        <i class="material-icons right">save</i>
+      </button>
+    </div>
   </div>
 </form>
+<div class="row container">
+  <div class="col s12">
+    <a style="width: 100%" href="{{route('show.dictamen',['name'=>$archivo->nombre,'nombre_hash'=>$archivo->nombre_hash])}}" class="btn" target="_blank">Ver documento</a>
+  </div>
+</div>
+@endempty
+
 {{-- Cada que finaliza, vamos a redirigirlo al form de detalle del equipo--}}
 <form action="{{route('equipo.show')}}" id="detalleEquipo">
   <input type="hidden" name="id_equipo" value="{{$data['id_equipo']}}">
@@ -74,24 +128,24 @@
 @push('scripts')
     <script>
 
-      let servicio_actual = @json($data);
-      let servicio = @json($servicio);
-      if(servicio_actual.id_tecnico_asignado == null){
-        console.log('No existe tecnico asignado');
-      }
+        let servicio_actual = @json($data);
+        let servicio = @json($servicio);
+        if(servicio_actual.id_tecnico_asignado == null){
+          console.log('No existe tecnico asignado');
+        }
 
 
-      // Hay que tener mucho cuidado con lo siguiente. Ya que si cambia el catalog esencialmente, afectara el comportamiento.
-      // Por lo que si no coincide algo es por ello y solo es de ajustar las variables.
+        // {{--Hay que tener mucho cuidado con lo siguiente. Ya que si cambia el catalog esencialmente, afectara el comportamiento.--}}
+        // {{--Por lo que si no coincide algo es por ello y solo es de ajustar las variables.--}}
 
-      servicio_actual.id_tipo_servicio  == 11 && desHabilitar($('#correccion'));
-      servicio_actual.id_tipo_servicio  == 12 && desHabilitar($('#mantenimiento'));
-      servicio_actual.id_tipo_servicio  == 13 && onlyDictamen($('#mantenimiento'),$('#correccion'));
+        servicio_actual.id_tipo_servicio  == 11 && desHabilitar($('#correccion'));
+        servicio_actual.id_tipo_servicio  == 12 && desHabilitar($('#mantenimiento'));
+        servicio_actual.id_tipo_servicio  == 13 && onlyDictamen($('#mantenimiento'),$('#correccion'));
 
-      servicio_actual.fecha_inicio  != null && desHabilitarBtn($('#mantenimiento .btns_time a.green'));
-      servicio_actual.fecha_inicio  != null && desHabilitarBtn($('#correccion .btns_time a.green'));
-      servicio_actual.fecha_finalizacion  != null && desHabilitarBtn($('#correccion .btns_time a.red'));
-      servicio_actual.fecha_finalizacion  != null && desHabilitarBtn($('#mantenimiento .btns_time a.red'));
+        servicio_actual.fecha_inicio  != null && desHabilitarBtn($('#mantenimiento .btns_time a.green'));
+        servicio_actual.fecha_inicio  != null && desHabilitarBtn($('#correccion .btns_time a.green'));
+        servicio_actual.fecha_finalizacion  != null && desHabilitarBtn($('#correccion .btns_time a.red'));
+        servicio_actual.fecha_finalizacion  != null && desHabilitarBtn($('#mantenimiento .btns_time a.red'));
 
       function desHabilitarBtn(obj){
         obj.addClass('disabled');
@@ -116,6 +170,8 @@
         // Mandamos el id del servicio actual a actualizar.
         let actual = servicio_actual.id_servicio
         
+        // Capturamos el valor de nuestro input de resumen.
+
         $.ajax({
           type: 'get',
           url: "{{route('servicio.update')}}",
@@ -136,12 +192,10 @@
 
 
       }
-      // console.log(servicio_actual.id_servicio);
-      // Quien es el servicio actual? Y su estado... 
-      // Segun eso deshabilitaremos el resto.
-      // Dictamen al guardar, se deshabilitaran el resto..
-      // Por eso es importante verificar si el servicio actual es dictamen, proceder a deshabilitar el resto.
-      // if(@json($data))
+
+
+
+    
     </script>
 @endpush
 

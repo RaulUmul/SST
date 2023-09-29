@@ -18,6 +18,9 @@
         <div class="divider modDivider"></div>
         <li class="hide-on-large-only"><a href="{{route('sistec.index')}}"><i class="material-icons">home</i>Inicio</a></li>
         <li class="hide-on-large-only"><a href="{{route('equipo.index')}}"><i class="material-icons">devices</i>Equipos</a></li>
+        {{-- Aqui entrar un middleware para mostrar/ocultar el acceso --}}
+        <li class=""><a href="{{route('usuario.index')}}"><i class="material-icons">manage_accounts</i>Administracion de Usuarios</a></li>
+        {{-- Termina la autorizacion --}}
         <li class="hide-on-large-only">
             <div class="divider modDivider"></div>
         </li>

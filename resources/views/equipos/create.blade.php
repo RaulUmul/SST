@@ -14,15 +14,19 @@
             <div class="col s12">
                 <div class="input-field col s12 m6">
                     <i class="material-icons prefix">person_outline</i>
-                    <select id="tecnico_revisa">
-                        <option value="" disabled selected>Selecciona</option>
+                    <select name="tecnico_revisa" id="tecnico_revisa">
+                        <option value="{{null}}" disabled>Selecciona</option>
+                        <option value="{{auth()->user()->id_usuario}}" selected>{{auth()->user()->nombres.' '.auth()->user()->apellidos}}</option>
                     </select>
                     <label for="tecnico_revisa">Tecnico que revisa</label>
                 </div>
                 <div class="input-field col s12 m6">
                     <i class="material-icons prefix">person_outline</i>
-                    <select id="tecnico_asignado" class="materialSelect">
-                        <option value="" disabled selected>Selecciona</option>
+                    <select name="tecnico_asignado" id="tecnico_asignado" class="materialSelect">
+                        <option value="{{null}}" disabled selected>Selecciona</option>
+                        @foreach ($tecnicos as $key => $value)
+                        <option value="{{$value->id_usuario}}">{{$value->nombres.' '.$value->apellidos}}</option>
+                        @endforeach
                     </select>
                     <label>Tecnico a asignar</label>
                 </div>
@@ -147,6 +151,15 @@
                 <div class="input-field col s12 m6">
                     <input id="nip_usuario" type="text" name="nip_usuario" type="text" class="validate" placeholder="Ingrese NIP">
                     <label for="nip_usuario" class="hide-on-med-and-up">NIP</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m6 labelMod hide-on-small-only">
+                    <label for="telefono">Telefono contacto</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <input id="telefono_usuario" type="number" name="telefono_usuario" type="text" class="validate" placeholder="Telefono/Celular">
+                    <label for="telefono_usuario" class="hide-on-med-and-up">Telefono contacto</label>
                 </div>
             </div>
             <div class="row">

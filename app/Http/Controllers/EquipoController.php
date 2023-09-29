@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use App\Models\Equipo;
 use App\Models\Item;
 use App\Models\Servicio;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Services\EquipoService;
@@ -24,6 +25,11 @@ class EquipoController extends Controller
     public function create(){
         $tipo_equipo = Item::where('id_categoria',1)->get();
         $tipo_servicio = Item::where('id_categoria',2)->get();
+
+        // Mandamos a traer los usuarios que tengan rol de tecnicos.
+
+        $tecnicos = User::whereJsonContains('roles',3)->get();
+
         foreach($tipo_servicio as $tipo ){
             switch ($tipo->descripcion) {
                 case 'Mantenimiento':
@@ -41,6 +47,7 @@ class EquipoController extends Controller
             }
         }
         return view('equipos.create',compact(
+            'tecnicos',
             'tipo_equipo',
             'mantenimiento',
             'correccion',
@@ -88,10 +95,9 @@ class EquipoController extends Controller
     }
 
     public function store(Request $request, EquipoService $equipoService, TicketService $ticketService,ServicioService $servicioService){
-
         if($request->ajax()){
             $rules = [
-                // 'tecnico_revisa'=>'required',
+                'tecnico_revisa'=>'required',
                 'equipos_en_lista'=>'different:default0',
                 'nip_usuario' => 'required',
                 'dependencia_policial'=>'required',
@@ -99,7 +105,7 @@ class EquipoController extends Controller
             ];
 
             $mensajes = [
-                // 'tecnico_revisa.required' => 'Seleccione tecnico que revisa',
+                'tecnico_revisa.required' => 'Seleccione tecnico que revisa',
                 'equipos_en_lista.different' => 'Debe agregar al menos un equipo al ticket',
                 'nip_usuario.required' => 'El NIP del usuario es obligatorio',
                 'dependencia_policial.required' => 'La dependencia policial del usuario es obligatorio',
@@ -120,7 +126,7 @@ class EquipoController extends Controller
             $ticket = $ticketService->createTicket($request);
             $servicio = $servicioService->createServicio($request,$ticket,$equipo);
 	      DB::commit();
-            return redirect()->back()->with('success','Ticket generado satisfactoriamente');
+            return redirect()->route('equipo.index')->with('success','Ticket generado satisfactoriamente');
         } catch (\Throwable $th) {
             // El rollback xd
             throw $th;
@@ -165,6 +171,8 @@ class EquipoController extends Controller
         $equipos_incluidos = Equipo::whereRelation('servicios','id_ticket',$last_ticket->id_ticket)
         ->whereNot('id_equipo',$request->id_equipo)
         ->get();
+
+        $tecnicos = User::whereJsonContains('roles',3)->get();
         // Mientras tenga estado distinto a 22, estara como el servicio actual.
         foreach($servicio as $disponible){
             if($disponible->id_estado_servicio != 22){ //Automatizar
@@ -180,6 +188,7 @@ class EquipoController extends Controller
 
 
         return view('equipos.show',compact(
+            'tecnicos',
             'tickets',
             'servicio',
             'equipo',

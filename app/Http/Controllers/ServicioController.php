@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Servicio;
+use App\Models\Archivo;
 use App\Services\EquipoService;
 use DateTime;
 use Illuminate\Http\Request;
@@ -13,7 +14,15 @@ class ServicioController extends Controller
     public function index(Request $request){
         // Desde aca enviaremos el historial de servicios si existiera.
         $servicio_actual = Servicio::find($request->servicio_actual['id_servicio']);
-        return view('servicios.index',['data'=>$servicio_actual,'servicio'=>$request->servicio]);
+
+        // Enviamos en caso de existir el archivo cargado y tenemos que indicar que ya existe dictamen
+        // Manejemolo como el de sae no? -> Si me parece
+        
+        // 1. Traemos a Archivo.
+        $archivo = Archivo::where('id_equipo',$request->servicio_actual['id_equipo'])
+        ->where('id_tipo_archivo',26)
+        ->first();
+        return view('servicios.index',['data'=>$servicio_actual,'servicio'=>$request->servicio,'archivo' => $archivo]);
     }
 
     public function update(Request $request,EquipoService $equipoService){

@@ -1,5 +1,6 @@
 -- Active: 1695306407955@@127.0.0.1@5432@stsgtic@sistec
 
+DROP TABLE IF EXISTS sistec.rol;
 DROP TABLE IF EXISTS sistec.historial;
 DROP TABLE IF EXISTS sistec.servicio;
 DROP TABLE IF EXISTS sistec.ticket;
@@ -66,9 +67,11 @@ VALUES
 -- TABLA USUARIO -> Quiza se descentralice al de la Institucion
 CREATE TABLE sistec.usuario(
                             id_usuario SERIAL PRIMARY KEY,
-                            cui INT,
-                            nombres VARCHAR(128),
-                            apellidos VARCHAR(128),
+                            cui JSONB,
+                            nombres VARCHAR(32),
+                            apellidos VARCHAR(32),
+                            password VARCHAR(64),
+                            roles JSONB,
                             id_tipo_usuario INT,
                             FOREIGN KEY (id_tipo_usuario) REFERENCES sistec.item(id_item)
 );
@@ -77,10 +80,11 @@ CREATE TABLE sistec.usuario(
 CREATE TABLE sistec.equipo(
                             id_equipo SERIAL PRIMARY KEY,
                             id_tipo_equipo INT,
-                            numero_serie VARCHAR(128),
-                            marca VARCHAR(128),
-                            modelo VARCHAR(128),
-                            dependencia_policial VARCHAR(128),
+                            numero_serie VARCHAR(64),
+                            marca VARCHAR(64),
+                            modelo VARCHAR(64),
+                            accesorios VARCHAR(64),
+                            dependencia_policial VARCHAR(64),
                             id_estado_equipo INT,
                             FOREIGN KEY (id_tipo_equipo) REFERENCES sistec.item(id_item),
                             FOREIGN KEY (id_estado_equipo) REFERENCES sistec.item(id_item)
@@ -99,11 +103,12 @@ CREATE TABLE sistec.archivo(
 -- TABLA TICKET
 CREATE TABLE sistec.ticket(
                             id_ticket SERIAL PRIMARY KEY,
-                            numero_documento VARCHAR(128),
+                            numero_documento VARCHAR(32),
                             id_archivo_referencia INT,
                             id_tecnico_revisa INT,
-                            nip_usuario_ingresa VARCHAR(128),
-                            nip_usuario_recibe VARCHAR(128),
+                            nip_usuario_ingresa VARCHAR(16),
+                            nip_usuario_recibe VARCHAR(16),
+                            telefono_contacto NUMERIC,
                             fecha_creacion TIMESTAMP,
                             fecha_entrega TIMESTAMP,
                             id_estado_ticket INT,
@@ -119,6 +124,7 @@ CREATE TABLE sistec.servicio(
                             id_equipo INT,
                             id_tecnico_asignado INT,
                             id_tipo_servicio INT,
+                            resumen TEXT,
                             fecha_inicio TIMESTAMP,
                             fecha_finalizacion TIMESTAMP,
                             id_estado_servicio INT,
@@ -139,5 +145,18 @@ CREATE TABLE sistec.historial(
                             FOREIGN KEY (id_servicio) REFERENCES sistec.servicio(id_servicio)
 );
 
+
+CREATE TABLE sistec.rol(
+                            id_rol SERIAL PRIMARY KEY,
+                            rol VARCHAR(32),
+                            descripcion TEXT
+);
+
+INSERT INTO sistec.rol(id_rol,rol,descripcion)
+VALUES
+  (1,'Administrador','Libre albedrio en Sistema'), --listo
+  (2,'Tecnico Admon.','Tecnico Administrador Soporte Tecnico'), --listo
+  (3,'Tecnico','Tecnico Operador Soporte Tecnico') --listo
+;
 
 

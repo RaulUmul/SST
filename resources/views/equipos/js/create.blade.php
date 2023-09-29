@@ -4,11 +4,11 @@
 //{{--Validara si hay suficiente equipos para hacer el envio del formulario--}}
 let equipos_en_lista = 0;
 
-let tecnico_revisa = document.getElementById('tecnico_revisa');
-M.FormSelect.init(tecnico_revisa);
+let tecnico_revisaS = document.getElementById('tecnico_revisa');
+M.FormSelect.init(tecnico_revisaS);
 
-let tecnico_asignado = document.getElementById('tecnico_asignado');
-M.FormSelect.init(tecnico_asignado);
+let tecnico_asignadoS = document.getElementById('tecnico_asignado');
+M.FormSelect.init(tecnico_asignadoS);
 
 let tipo_equipo = document.getElementById('tipo_equipo');
 M.FormSelect.init(tipo_equipo);
@@ -97,9 +97,13 @@ $('#enviarForm').on('click',function (e) {
   e.preventDefault()
 
   let tecnico_revisa = $('#tecnico_revisa').val(),
+      tecnico_asignado = $('#tecnico_asignado').val(),
         nip_usuario = $('#nip_usuario').val(),
         dependencia_policial = $('#dependencia_policial').val(),
         servicios_a_realizar = $('input:checked').length;
+
+        // console.log(tecnico_revisa);
+        // return;
 
     $.ajax({
     url: '{{route('equipo.store')}}',
@@ -107,6 +111,7 @@ $('#enviarForm').on('click',function (e) {
       data: {
         _token:'{{ csrf_token() }}',
         tecnico_revisa,
+        tecnico_asignado,
         nip_usuario,
         dependencia_policial,
         equipos_en_lista,

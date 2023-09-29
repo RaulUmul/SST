@@ -72,7 +72,13 @@
               </div>
               <div class="col s6 right-align">
                 <a href="{{route('servicio.index',['servicio'=>json_decode($servicio),'servicio_actual'=>json_decode($servicio_actual)])}}"><strong> @foreach ($tipo_servicio as $tipo) @if($tipo->id_item == $servicio_actual->id_tipo_servicio ) {{$tipo->descripcion}} @endif @endforeach </strong></a>
-                <p><strong> - {{$servicio_actual->id_tecnico_asignado}}</strong></p>
+                <p><strong>
+                @foreach ($tecnicos as $tecnico)
+                    @if ($tecnico->id_usuario == $servicio_actual->id_tecnico_asignado)
+                      {{$tecnico->nombres.' '.$tecnico->apellidos}}
+                    @endif
+                @endforeach 
+                </strong></p>
                 <p><strong>@foreach ($estado_servicio as $estado) @if($estado->id_item == $servicio_actual->id_estado_servicio ) {{$estado->descripcion}} @endif @endforeach </strong></p>
                 <p><strong> Pendiente </strong></p>
               </div>

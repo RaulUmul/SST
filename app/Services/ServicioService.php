@@ -29,11 +29,8 @@ class ServicioService{
         $servicio = new Servicio();
           $servicio->id_ticket = $ticket->id_ticket;
           $servicio->id_equipo = $value->id_equipo;
-          // $servicio->id_tecnico_asignado = $request->tecnico_asignado;
-          // $servicio->id_tecnico_asignado = 2; //Automatizar
+          $servicio->id_tecnico_asignado = $request->tecnico_asignado;
           $servicio->id_tipo_servicio = $aRealizar; //Automatizar
-          // $servicio->fecha_inicio = ; //Automatizar -> Aun no se como manejarlo.
-          // $servicio->fecha_finalizacion = ; //Automatizar -> Aun no se como manejarlo.
           $servicio->id_estado_servicio = 20; //Automatizar
         $servicio->save();
       }

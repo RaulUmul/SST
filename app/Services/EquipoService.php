@@ -27,8 +27,8 @@ class EquipoService{
         $equipo->id_tipo_equipo = $dato['tipo_equipo'];
         $equipo->numero_serie = $dato['numero_serie'];
         $equipo->marca = $dato['marca'];
-        $equipo->modelo = $dato>['modelo'];
-        $equipo->modelo = $dato>['accesorios'];
+        // $equipo->modelo = $dato['modelo'];
+        $equipo->accesorios = $dato['accesorios'];
         $equipo->dependencia_policial = $request->dependencia_policial;
         $equipo->id_estado_equipo = 14;
       $equipo->save();

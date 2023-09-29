@@ -62,13 +62,16 @@
           </script>
         @endpush
     @endif     
-
+    @auth
     <header class="navbar-fixed">
         @include('components/navbar')
     </header>
-
+    @endauth
     <main>
+      @auth
         @include('components.sidenav')
+      @endauth
+
         @yield('content')
     </main>
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login - SISTEC</title>
+    <title>Registro - SISTEC</title>
        {{-- Materialize --}}
        <!-- Compiled and minified CSS -->
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -81,7 +81,7 @@
                 <strong>Bienvenido a Sistema de Servicios Tecnicos</strong>
             </div>
             <div class="inputs">
-                <form method="POST" action="{{route('login')}}">
+                <form  method="POST" action="{{route('registro.create')}}">
                     @csrf
                     <div class="row">
                         <div class="col s12 center-align red-text">
@@ -91,9 +91,20 @@
                         </div>
                     </div>
                     <div class="row">
+
                         <div class="input-field col s12">
-                            <input name="cui" id="cui" type="text" class="validate" value="{{old('cui')}}">
-                            <label for="cui">CUI/DPI</label>
+                            <input name="nombres" id="nombres" type="text" class="validate" value="{{old('nombres')}}">
+                            <label for="nombres">Nombre completo</label>
+                            <span class="helper-text red-text">{{$errors->first('nombres')}}</span>
+                        </div>
+                        <div class="input-field col s12">
+                            <input name="apellidos" id="apellidos" type="text" class="validate" value="{{old('apellidos')}}">
+                            <label for="apellidos">Apellidos</label>
+                            <span class="helper-text red-text">{{$errors->first('apellidos')}}</span>
+                        </div>
+                        <div class="input-field col s12">
+                            <input name="cui"  id="cui" type="text" class="validate" value="{{old('cui')}}">
+                            <label for="cui">DPI / CUI</label>
                             <span class="helper-text red-text">{{$errors->first('cui')}}</span>
                         </div>
                         <div class="input-field col s12">
@@ -105,15 +116,15 @@
                     <div class="row">
                         <div class="col s12 center-align">
                             <button class="btn">
-                                Entrar
-                                <i class="material-icons right">send</i>
+                                Registrarse
+                                <i class="material-icons right">check</i>
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="registro center-align">
-                Si aun no tienes cuenta registrate <a href="{{route('registro.index')}}">aqui</a>
+                Si ya tienes cuenta inicia sesion <a href="{{route('login.index')}}">aqui</a>
             </div>
         </div>
     </div>

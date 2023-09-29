@@ -39,7 +39,7 @@ class QrCodeController extends Controller
         $nombre_hash = \Hash::make($nombre_archivo);
         $qr = QrCode::generate($ruta);
         // Guardamos el qr.
-        \Storage::disk('qrcode')->put($nombre_hash,$qr);
+        \Storage::disk('qrcode')->put($nombre_archivo,$qr);
         // Ya guardado, almacenamos en la tabla de Archivo.
 
         $archivo = new Archivo();

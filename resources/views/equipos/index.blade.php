@@ -24,7 +24,7 @@
             <a href="#!" class="btn btn-small">Sin asignar</a>
         </div>
         <div >
-            <a href="{{route('equipo.create')}}" class="btn btn-small"><i class="right material-icons">add</i>Ingresar</a>
+            <a href="{{route('equipo.create')}}" class="btn btn-small"><i class="right material-icons">add</i>Nuevo</a>
         </div>
     </div>
     @include('partials.divider')
