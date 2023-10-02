@@ -52,6 +52,7 @@
                 <p><strong> @foreach ($tipo_equipo as $tipo) @if($tipo->id_item == $equipo[0]->id_tipo_equipo ) {{$tipo->descripcion}} @endif @endforeach </strong></p>
                 <p><strong>{{$equipo[0]->marca}}</strong></p>
                 <p><strong>{{$equipo[0]->numero_serie}}</strong></p>
+                <p><strong>{{date('d/m/Y',strtotime($last_ticket->fecha_creacion))}}</strong></p>
               </div>
             </div>
           </div>
@@ -68,19 +69,48 @@
                 <p>Servicio actual:</p>
                 <p>Tecnico asignado:</p>
                 <p>Estado del servicio:</p>
-                <p>Fecha de entrega:</p>
+                <p>Estado entrega:</p>
               </div>
               <div class="col s6 right-align">
                 <a href="{{route('servicio.index',['servicio'=>json_decode($servicio),'servicio_actual'=>json_decode($servicio_actual)])}}"><strong> @foreach ($tipo_servicio as $tipo) @if($tipo->id_item == $servicio_actual->id_tipo_servicio ) {{$tipo->descripcion}} @endif @endforeach </strong></a>
                 <p><strong>
-                @foreach ($tecnicos as $tecnico)
+                  @empty($servicio_actual->id_tecnico_asignado)
+                   Sin asignar
+                  @else
+                    @foreach ($tecnicos as $tecnico)
                     @if ($tecnico->id_usuario == $servicio_actual->id_tecnico_asignado)
                       {{$tecnico->nombres.' '.$tecnico->apellidos}}
                     @endif
-                @endforeach 
+                    @endforeach 
+                  @endempty
                 </strong></p>
                 <p><strong>@foreach ($estado_servicio as $estado) @if($estado->id_item == $servicio_actual->id_estado_servicio ) {{$estado->descripcion}} @endif @endforeach </strong></p>
-                <p><strong> Pendiente </strong></p>
+                {{-- Vamos a validar si ya esta entregado, nos aparece fecha de entrega, pero si aun no esta entregado que aparezca Listo para entregar cuando ya este finalizado todos los servicios. --}}
+                @auth
+                {{-- <p><strong> @dump($equipo[0]->id_estado_equipo)</strong></p> --}}
+                @if ($equipo[0]->id_estado_equipo == 16 && $last_ticket->id_estado_ticket == 18)
+                 <p> <strong><a href="#!">Listo para entregar</strong></a></p>
+                 {{-- <p><strong>Pendiente</strong></p>  --}}
+                 @else 
+                  @if ($equipo[0]->id_estado_equipo == 17)
+                  Entregado - "fecha:v"
+                  @else
+                  Pendiente
+                  @endif
+                 {{-- Pendiente --}}
+                @endif
+
+                {{-- <p><strong> @dump($last_ticket)</strong></p> --}}
+                @endauth
+                @guest
+                    @if ($equipo[0]->id_estado_equipo != 17 && $last_ticket->id_estado_ticket == 18)
+                      Pendiente
+                    @else
+                      @if ($equipo[0]->id_estado_equipo == 17)
+                        Entregado - "fecha:v"
+                      @endif
+                    @endif
+                @endguest
               </div>
             </div>
           </div>

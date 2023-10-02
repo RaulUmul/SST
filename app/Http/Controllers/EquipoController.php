@@ -81,7 +81,7 @@ class EquipoController extends Controller
         $estado = $equipoService->verificarEquipo($request);
         
         if($estado){
-          return  response()->json(['El equipo ya fue ingresado y se encuentra en cola...'],500);
+          return  response()->json(['El equipo ya fue ingresado, consulte estado en Sistema'],500);
         }
 
         // Retornamos la vista con los datos insertados.
@@ -156,7 +156,7 @@ class EquipoController extends Controller
         $estado_ticket = Item::where('id_categoria',4)->get();
         $estado_servicio = Item::where('id_categoria',5)->get();
 
-        // 1. Necesitamos el id del equip, del cual iremos a consultar el ultimo ticket creado con ese id.
+        // 1. Necesitamos el id del equipo, del cual iremos a consultar el ultimo ticket creado con ese id.
         $tickets = Ticket::whereRelation('servicios','id_equipo',$request->id_equipo);
         $last_ticket = $tickets->latest('id_ticket')->first();
         // Obtenemos el servicio actual ordenado -> Mantenimiento -> Correccion -> Dictamen
@@ -202,5 +202,53 @@ class EquipoController extends Controller
         ));
     }
 
+    public function show_especifically_ticket(Request $request){
+    // Items necesarios
+    $tipo_equipo = Item::where('id_categoria',1)->get();
+    $tipo_servicio = Item::where('id_categoria',2)->get();
+    $estado_equipo = Item::where('id_categoria',3)->get();
+    $estado_ticket = Item::where('id_categoria',4)->get();
+    $estado_servicio = Item::where('id_categoria',5)->get();
 
+    // 1. Necesitamos el id del equipo, del cual iremos a consultar el ultimo ticket creado con ese id.
+    $tickets = Ticket::whereRelation('servicios','id_equipo',$request->id_equipo);
+    $last_ticket = $tickets->where('id_ticket',$request->id_ticket)->first();
+    // Obtenemos el servicio actual ordenado -> Mantenimiento -> Correccion -> Dictamen
+    $servicio = Servicio::where('id_ticket',$last_ticket->id_ticket)
+    ->where('id_equipo',$request->id_equipo)
+    ->orderBy('id_servicio','asc')
+    ->get();
+    $tickets = $tickets->get();
+    $equipo = Equipo::where('id_equipo',$request->id_equipo)
+    ->whereRelation('servicios','id_equipo',$request->id_equipo)
+    ->get();
+    $equipos_incluidos = Equipo::whereRelation('servicios','id_ticket',$last_ticket->id_ticket)
+    ->whereNot('id_equipo',$request->id_equipo)
+    ->get();
+
+    $tecnicos = User::whereJsonContains('roles',3)->get();
+    // Mientras tenga estado distinto a 22, estara como el servicio actual.
+    foreach($servicio as $disponible){
+        if($disponible->id_estado_servicio != 22){ //Automatizar
+            $servicio_actual = $disponible;
+            break;
+        }else{
+            $servicio_actual = $servicio->last();
+        }
+    }
+
+    return view('equipos.show',compact(
+        'tecnicos',
+        'tickets',
+        'servicio',
+        'equipo',
+        'last_ticket',
+        'estado_ticket',
+        'tipo_equipo',
+        'tipo_servicio',
+        'estado_servicio',
+        'equipos_incluidos',
+        'servicio_actual'
+    ));
+    }
 }

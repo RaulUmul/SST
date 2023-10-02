@@ -29,8 +29,7 @@ class ServicioController extends Controller
         // Nos quedamos aqui..... -> resulta que servicio siempre va a traer a todos
         // los servicios nuevamente, por lo que nunca va a quedar en null, 
         // debemos traer servicio con filtro desde la DB, indicando que servicio != estado 22
-        // $servicio = $request->servicio;
-
+        // dd($request->all());
         $fecha_guardada = new DateTime();
         $fecha_guardada = date('d-m-Y h:i:s',$fecha_guardada->getTimestamp());
 
@@ -44,6 +43,8 @@ class ServicioController extends Controller
         if($request->columna_registrar == 'Finalizar'){
             $servicio_actualizar = Servicio::find($request->actual);
             $servicio_actualizar->fecha_finalizacion = $fecha_guardada;
+            if($request->resumen_mantenimiento != null)  $servicio_actualizar->resumen = $request->resumen_mantenimiento;
+            if($request->resumen_correccion != null)  $servicio_actualizar->resumen = $request->resumen_correccion;
             $servicio_actualizar->id_estado_servicio = 22; //Automatizar
             $servicio_actualizar->save();
 

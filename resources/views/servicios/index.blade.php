@@ -3,10 +3,7 @@
 @section('content')
 
 {{-- Un formulario para capturar el inicio y la finalizacion --}}
- 
-{{-- Vamos a crear 3 formularios --}}
-{{-- Y solo vamos a sustituir segun venga los arreglos de servicio y servicio_actual --}}
-{{-- A jugar con los gatos pes T.T --}}
+ {{-- El texto del enlace que registraTimeStamp(this)-> "Iniciar " o "Finalizar " <-Debe contener un espacio. --}}
 {{-- @dd($data) --}}
 <form action="" id="mantenimiento">
   <div class="row container">
@@ -18,7 +15,7 @@
       <a href="#!" onclick="registraTimeStamp(this)" class="red btn">Finalizar <i class="left material-icons">stop_circle</i></a>
       {{-- El resumen debe de activarse hasta que finalice el mantenimiento --}}
       <div class="input-field col s12">
-        <input id="resumen_mantenimiento" type="text" name="resumen_mantenimiento">
+        <textarea id="resumen_mantenimiento" name="resumen_mantenimiento" class="materialize-textarea"></textarea>
         <label for="resumen_mantenimiento">Resumen/Observacion</label>
       </div>
     </div>
@@ -36,7 +33,7 @@
       <a href="#!" onclick="registraTimeStamp(this)" class="red btn">Finalizar <i class="left material-icons">stop_circle</i></a>
       {{-- El resumen debe de activarse hasta que finalice el mantenimiento --}}
       <div class="input-field col s12">
-        <input id="resumen_correccion" type="text" name="resumen_correccion">
+        <textarea id="resumen_correccion" name="resumen_correccion" class="materialize-textarea"></textarea>
         <label for="resumen_correccion">Resumen/Observacion</label>
       </div>
     </div>
@@ -128,13 +125,17 @@
 @push('scripts')
     <script>
 
+
+
         let servicio_actual = @json($data);
         let servicio = @json($servicio);
+
         if(servicio_actual.id_tecnico_asignado == null){
           console.log('No existe tecnico asignado');
         }
+        
 
-
+        // console.log(servicio);
         // {{--Hay que tener mucho cuidado con lo siguiente. Ya que si cambia el catalog esencialmente, afectara el comportamiento.--}}
         // {{--Por lo que si no coincide algo es por ello y solo es de ajustar las variables.--}}
 
@@ -146,6 +147,27 @@
         servicio_actual.fecha_inicio  != null && desHabilitarBtn($('#correccion .btns_time a.green'));
         servicio_actual.fecha_finalizacion  != null && desHabilitarBtn($('#correccion .btns_time a.red'));
         servicio_actual.fecha_finalizacion  != null && desHabilitarBtn($('#mantenimiento .btns_time a.red'));
+
+          
+      cargar_resumenes(servicio)
+
+      function cargar_resumenes(servicio){
+        servicio.map((elem)=>{
+          if(elem.hasOwnProperty('resumen')){
+            switch (elem.id_tipo_servicio) {
+              case "11":
+                  $('#resumen_mantenimiento').val(elem.resumen);
+                break;
+              case "12":
+                  $('#resumen_correccion').val(elem.resumen);
+                break;
+            
+              default:
+                break;
+            }  
+          }
+        })
+      }
 
       function desHabilitarBtn(obj){
         obj.addClass('disabled');
@@ -161,6 +183,9 @@
       }
 
       function registraTimeStamp(obj){
+        // Capturamos ambos inputs....
+        let resumen_mantenimiento = $('#resumen_mantenimiento').val();
+        let resumen_correccion = $('#resumen_correccion').val();
         // Desactivamos el boton
         $(obj).addClass('disabled');
         // Mandamos la columna a registrar el timestamp
@@ -179,7 +204,9 @@
             columna_registrar,
             // tipo_servicio,
             servicio,
-            actual
+            actual,
+            resumen_mantenimiento,
+            resumen_correccion
           },
           dataType: "text",
           success: function (response) {
