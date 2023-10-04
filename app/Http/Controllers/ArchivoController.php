@@ -70,7 +70,7 @@ class ArchivoController extends Controller
                 ->get()
                 ->toArray();
 
-                if($servicio == null){
+                if($otherServicio == null){
                     $estado = 16; //Automatizar
                     $equipoService->updateEstado($request->id_equipo, $estado);
                 }
@@ -83,7 +83,7 @@ class ArchivoController extends Controller
         }
     }
 
-    public function update_dictamen(Request $request){
+    public function update_dictamen(Request $request, EquipoService $equipoService){
         // dd($request->all());
         if($request->hasFile('file')){
             if($request->file('file')->isValid()){
@@ -111,7 +111,19 @@ class ArchivoController extends Controller
                 $servicio_update = Servicio::find($servicio->first()->id_servicio);
                 $servicio_update->fecha_inicio = $fecha_guardada;
                 $servicio_update->fecha_finalizacion = $fecha_guardada;
+                $servicio_update->id_estado_servicio = 22; //Automatizar
                 $servicio_update->save();
+
+                $otherServicio = Servicio::where('id_equipo',$request->id_equipo)
+                ->whereNot('id_estado_servicio',22)
+                ->orderBy('id_servicio','asc')
+                ->get()
+                ->toArray();
+
+                if($otherServicio == null){
+                    $estado = 16; //Automatizar
+                    $equipoService->updateEstado($request->id_equipo, $estado);
+                }
 
                 return back()->with('success','Se cambio correctamente');
 

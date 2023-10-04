@@ -1,4 +1,4 @@
--- Active: 1695174087628@@127.0.0.1@5432@stsgtic@sistec
+-- Active: 1695306407955@@127.0.0.1@5432@stsgtic@sistec
 
 DROP TABLE IF EXISTS sistec.rol;
 DROP TABLE IF EXISTS sistec.historial;

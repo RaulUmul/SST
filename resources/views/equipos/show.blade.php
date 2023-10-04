@@ -5,7 +5,7 @@
 
     {{-- El ticket debera traer todos los equipos, pero el resumen mostrara solo el de cada equipo. --}}
     {{-- @dump($servicio) --}}
-    {{-- @dump($ticket) --}}
+    {{-- @dump($tickets) --}}
     {{-- @dump($last_ticket) --}}
     {{-- @dump($equipos_incluidos) --}}
 
@@ -88,28 +88,28 @@
                 {{-- Vamos a validar si ya esta entregado, nos aparece fecha de entrega, pero si aun no esta entregado que aparezca Listo para entregar cuando ya este finalizado todos los servicios. --}}
                 @auth
                 {{-- <p><strong> @dump($equipo[0]->id_estado_equipo)</strong></p> --}}
-                @if ($equipo[0]->id_estado_equipo == 16 && $last_ticket->id_estado_ticket == 18)
-                 <p> <strong><a href="#!">Listo para entregar</strong></a></p>
-                 {{-- <p><strong>Pendiente</strong></p>  --}}
-                 @else 
-                  @if ($equipo[0]->id_estado_equipo == 17)
-                  Entregado - "fecha:v"
-                  @else
-                  Pendiente
-                  @endif
-                 {{-- Pendiente --}}
-                @endif
-
+                {{-- @if ($equipo[0]->id_estado_equipo == 16 && $last_ticket->id_estado_ticket == 18) --}}
+                 {{-- <p> <strong><a href="#modEntregaEquipo" class="modal-trigger">Listo para entregar</strong></a></p> --}}
+                 {{-- @else  --}}
+                  {{-- @if ($equipo[0]->id_estado_equipo == 17 && $last_ticket->id_estado_ticket == 19) --}}
+                  {{-- Entregado - "fecha:v" --}}
+                  {{-- @else --}}
+                  {{-- Pendiente --}}
+                  {{-- @endif --}}
+                {{-- @endif --}}
+                {{-- @if () --}}
+                {{-- @else --}}
+                {{-- @endif --}}
                 {{-- <p><strong> @dump($last_ticket)</strong></p> --}}
                 @endauth
                 @guest
-                    @if ($equipo[0]->id_estado_equipo != 17 && $last_ticket->id_estado_ticket == 18)
-                      Pendiente
-                    @else
-                      @if ($equipo[0]->id_estado_equipo == 17)
-                        Entregado - "fecha:v"
-                      @endif
-                    @endif
+                    {{-- @if ($equipo[0]->id_estado_equipo != 17 && $last_ticket->id_estado_ticket == 18) --}}
+                      {{-- Pendiente --}}
+                    {{-- @else --}}
+                      {{-- @if ($equipo[0]->id_estado_equipo == 17) --}}
+                        {{-- Entregado - "fecha:v" --}}
+                      {{-- @endif --}}
+                    {{-- @endif --}}
                 @endguest
               </div>
             </div>
@@ -118,9 +118,23 @@
       </ul>
     </div>
     <div class="row container">
+      @if(isset($tickets))
+          
       <div class="col s12 right-align">
-        <a href="#!">Ver tickets anteriores...</a>
+        {{-- @dd($tickets) --}}
+        {{-- Hay que validar si existen tickets anteriores, se muestra, si no no --}}
+        {{-- Hay que enviarlo por POST --}}
+        <form action="{{route('equipo.oldTickets')}}" method="POST" id="ticketsForm">
+          @csrf
+          <input type="hidden" name="tickets" value="{{$tickets}}">
+          <input type="hidden" name="id_equipo" value="{{$equipo[0]->id_equipo}}">
+          {{-- <a href="{{route('equipo.oldTickets',['tickets'=>json_encode($tickets)])}}">Ver tickets anteriores</a> --}}
+          <button class="btn">
+            Ver tickets anteriores...
+          </button>
+        </form>
       </div>
+      @endif
     </div>
     {{-- Equipos Incluidos en ticket --}}
     <div class="row container">
@@ -144,6 +158,25 @@
         </div>
       </div>
     </div>
+
+    {{-- Modals --}}
+    <div id="modEntregaEquipo" class="modal">
+      <div class="modal-content center-align">
+        <h4>Entregar Equipo</h4>
+        <form id="formEntregaEquipo" method="POST" action="{{route('equipo.entrega')}}">
+          @csrf
+          <input id="id_equipo" name="id_equipo" type="hidden" value="{{$equipo[0]->id_equipo}}">
+          <input id="id_ticket" name="id_ticket" type="hidden" value="{{$last_ticket->id_ticket}}">
+          <div class="input-field col s6">
+            <input id="nip_usuario" name="nip_usuario" type="text" class="validate">
+            <label for="nip_usuario">NIP Usuario recibe equipo</label>
+          </div>
+          <button class="btn" onclick="entregaEquipo(event)">
+            Entregado
+          </button>
+        </form>
+      </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -157,6 +190,42 @@
         (isActive) ? badge.textContent = 'arrow_drop_down' : badge.textContent = 'arrow_drop_up';
       });
     });
+
+    var modalEntregaEquipo = document.querySelectorAll('.modal');
+    M.Modal.init(modalEntregaEquipo);
+
+
   });
+
+  
+  function entregaEquipo(e) {
+      e.preventDefault();
+      let nip_usuario = $('#nip_usuario').val();
+      let id_equipo = $('#id_equipo').val();
+      let id_ticket = $('#id_ticket').val();
+      $.ajax({
+        type: 'POST' ,
+        url: "{{route('equipo.entrega')}}",
+        data: {
+          nip_usuario,
+          id_equipo,
+          id_ticket,
+          _token:'{{ csrf_token() }}'
+        },
+        dataType: "text",
+        success: function (response) {
+          $('#formEntregaEquipo').submit();
+        },
+        error: function(response){
+          if(JSON.parse(response.responseText)){
+          let errores = Object.values(JSON.parse(response.responseText));
+          errores.map(el => {
+            M.toast({html: `<span><i class="material-icons left">error</i></span><span>${el}</span>`});
+            }
+          )
+        }
+        }
+      });
+    }
 </script>
 @endpush

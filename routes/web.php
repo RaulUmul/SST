@@ -40,6 +40,9 @@ Route::controller(EquipoController::class)->group(function(){
   Route::post('/equipo/add','equipoAddtoTicket')->name('equipo.add');
   Route::get('/equipo/_equipos','showEquipos')->name('equipo.showEquipos')->middleware('auth');
   Route::get('/equipo/detalle','show')->name('equipo.show');
+  Route::get('/equipo/detalle_ticket','show_especifically_ticket')->name('equipo.show_especifically');
+  Route::post('/equipo/entrega','entrega')->name('equipo.entrega');
+  Route::post('/equipo/anteriores_tickets','oldTickets')->name('equipo.oldTickets');
 });
 
 // Control de Servicios por equipo.

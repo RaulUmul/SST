@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Services\EquipoService;
 use App\Services\TicketService;
 use App\Services\ServicioService;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 
 class EquipoController extends Controller
@@ -119,7 +120,7 @@ class EquipoController extends Controller
             return $request;
         }
 
-        
+        // Tenemos que validar si ya existe, solo le damos un update al equipo.
         try {
     	  DB::beginTransaction();
             $equipo = $equipoService->createEquipo($request);
@@ -164,7 +165,8 @@ class EquipoController extends Controller
         ->where('id_equipo',$request->id_equipo)
         ->orderBy('id_servicio','asc')
         ->get();
-        $tickets = $tickets->get();
+        $tickets = Ticket::whereRelation('servicios','id_equipo',$request->id_equipo)
+        ->whereNot('id_ticket',$last_ticket->id_ticket)->get();
         $equipo = Equipo::where('id_equipo',$request->id_equipo)
         ->whereRelation('servicios','id_equipo',$request->id_equipo)
         ->get();
@@ -202,8 +204,16 @@ class EquipoController extends Controller
         ));
     }
 
+    public function oldTickets(Request $request){
+        // return ($quetraigo->tickets);
+        $tickets = $request->tickets;
+        $id_equipo = $request->id_equipo;
+        return view('equipos.listTickets',compact('tickets','id_equipo'));
+    }
+
     public function show_especifically_ticket(Request $request){
     // Items necesarios
+    // dd($request->id_equipo);
     $tipo_equipo = Item::where('id_categoria',1)->get();
     $tipo_servicio = Item::where('id_categoria',2)->get();
     $estado_equipo = Item::where('id_categoria',3)->get();
@@ -214,15 +224,17 @@ class EquipoController extends Controller
     $tickets = Ticket::whereRelation('servicios','id_equipo',$request->id_equipo);
     $last_ticket = $tickets->where('id_ticket',$request->id_ticket)->first();
     // Obtenemos el servicio actual ordenado -> Mantenimiento -> Correccion -> Dictamen
-    $servicio = Servicio::where('id_ticket',$last_ticket->id_ticket)
+    $servicio = Servicio::where('id_ticket',$request->id_ticket)
     ->where('id_equipo',$request->id_equipo)
     ->orderBy('id_servicio','asc')
     ->get();
-    $tickets = $tickets->get();
+
+    // dd($servicio);
+    // $tickets = $tickets->whereNot('id_ticket',$request->id_ticket)->get();
     $equipo = Equipo::where('id_equipo',$request->id_equipo)
     ->whereRelation('servicios','id_equipo',$request->id_equipo)
     ->get();
-    $equipos_incluidos = Equipo::whereRelation('servicios','id_ticket',$last_ticket->id_ticket)
+    $equipos_incluidos = Equipo::whereRelation('servicios','id_ticket',$request->id_ticket)
     ->whereNot('id_equipo',$request->id_equipo)
     ->get();
 
@@ -239,7 +251,7 @@ class EquipoController extends Controller
 
     return view('equipos.show',compact(
         'tecnicos',
-        'tickets',
+        // 'tickets',
         'servicio',
         'equipo',
         'last_ticket',
@@ -250,5 +262,49 @@ class EquipoController extends Controller
         'equipos_incluidos',
         'servicio_actual'
     ));
+    }
+
+    public function entrega(Request $request, EquipoService $equipoService){
+        if($request->ajax()){
+            $rules = [
+                'nip_usuario' => 'required',
+            ];
+
+            $mensajes = [
+                'nip_usuario.required' => 'El NIP de quien recibe es obligatorio'
+            ];
+
+            $validator = Validator::make($request->all(),$rules,$mensajes);
+
+            if($validator->fails()){
+              $result = $validator->errors();
+              return  response()->json($result,500);
+            }
+        }
+
+        $fecha_guardada = new DateTime();
+        $fecha_guardada = date('d-m-Y h:i:s',$fecha_guardada->getTimestamp());
+
+        // Vamos a manejar el cambio de estado del equipo.
+        $estado = 17; //Automatizar
+        $equipoService->updateEstado($request->id_equipo,$estado);
+        // Vamos a manejar el cambio de estado del ticket.
+            // Si ya todos los equipos fueron entregados se cierra el ticket.
+
+        $equipos = Equipo::whereRelation('servicios','id_ticket',$request->id_ticket)
+        ->where('id_estado_equipo','!=',17);
+        
+
+        if($equipos->doesntExist()){
+            // return 'Ya se entregaron todos los equipos';
+            // Entonces si ya se entregaron todos cambiamos el estado del ticket  a "CERRADO"
+            $ticket = Ticket::find($request->id_ticket);
+            $ticket->nip_usuario_recibe = $request->nip_usuario;
+            $ticket->id_estado_ticket = 19;
+            $ticket->fecha_entrega = $fecha_guardada;
+            $ticket->save();
+        }
+
+        return redirect()->route('equipo.index')->with('success','Entregado');
     }
 }
