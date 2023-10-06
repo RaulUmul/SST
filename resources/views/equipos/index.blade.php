@@ -33,7 +33,7 @@
         <table id="table-equipos" style="width: 100%">
             <thead>
             <tr>
-              <th>Tecnico Ingresa</th>
+              <th>Tecnico Revisó</th>
               <th>Tecnico Asignado</th>
               <th>Tipo</th>
               <th>Serie</th>
@@ -60,15 +60,47 @@
         beforeSend: function (){},
         success: function (resp) {
           let { data } = resp.equipos;
+          let { tecnicos } = resp.tecnicos;
           console.log(resp.equipos);
+          // console.log(resp.tecnicos);
           var tablaArmas = $('#table-equipos').addClass('nowrap').DataTable({
             responsive: true,
             "pageLength": 5,
             "order": [ 0, 'desc' ],
             data: resp.equipos,
             columns: [
-              {data: 'id_equipo'}, // Tecnico ingresa
+              // {data: 'servicios',render: function (data){
+              //   let descripcion;
+              //   data.map(el=>{
+              //     descripcion = el.id_tecnico_asignado;
+              //   } )
+              //   return descripcion;
+              // }}, // Tecnico ingresa
               {data: 'id_equipo'}, //Tecnico asignado
+              {data: 'servicios',render: function (data){
+                let descripcion;
+
+                data.map(el=>{
+                  if(el.id_tecnico_asignado == null){
+                    descripcion = 'Sin asignar';
+                  }else{
+                    descripcion = el.id_tecnico_asignado;
+                  }
+                })
+
+                if(descripcion != 'Sin asignar'){
+                  let nombres, apellidos;
+                  resp.tecnicos.map(element => {
+                    if(element.id_usuario == descripcion){
+                      nombres = element.nombres;
+                      apellidos = element.apellidos;
+                    }
+                  });
+                  descripcion = ` ${nombres} ${apellidos}`;
+                }
+
+                return descripcion;
+              }}, //Tecnico asignado
               {data: 'id_tipo_equipo',render: function(data){
                 let descripcion;
                 resp.tipo_equipo.map((tipo)=>{

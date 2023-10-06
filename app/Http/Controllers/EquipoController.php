@@ -138,10 +138,24 @@ class EquipoController extends Controller
     }
 
     public function showEquipos(){
-        $equipos = Equipo::all();
+
+        // Hay que cargar el ultimo ticket.
+
+        // $equipos = Equipo::with(['servicios'=> function ($servicio){
+        //     $servicio->latest('id_ticket')->with('ticket')->get();
+        // }])->get();
+        $equipos = Equipo::with('servicios')->get();
+
+        $tecnicos = User::whereJsonContains('roles',3)->get();
+
         $estado_equipo = Item::where('id_categoria',3)->get();
         $tipo_equipo = Item::where('id_categoria',1)->get();
-        return ['equipos'=>$equipos,'estado_equipo'=>$estado_equipo,'tipo_equipo'=>$tipo_equipo];
+        return [
+            'equipos'=>$equipos,
+            'estado_equipo'=>$estado_equipo,
+            'tipo_equipo'=>$tipo_equipo,
+            'tecnicos'=>$tecnicos
+        ];
     }
 
     public function show(Request $request){
