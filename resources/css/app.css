@@ -49,6 +49,10 @@ h2,h3,h4{
     flex-wrap: wrap;
     justify-content: space-around;
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
 /* Media Querys */
 
 @media only screen and (max-width : 992px) {

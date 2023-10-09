@@ -9,7 +9,7 @@
 @endpush
 @section('ocultar','hide-on-large-only')
 @section('content')
-<div class="row container">
+<div class="row container" style="width: 90%">
     {{-- Title --}}
     <div class="col s12 center-align">
         <h2>Equipos</h2>
@@ -20,12 +20,21 @@
     {{-- Section Buttons --}}
     <div class="col s12" style="display: flex; gap: 0px; justify-content: space-between; margin-top: 2rem; margin-bottom: 2rem">
         <div>
-            <a href="#!" class="btn btn-small">Creados</a>
-            <a href="#!" class="btn btn-small">Sin asignar</a>
+            <a href="#!" class="btn btn-small" id="allEquipos" >Todos</a>
+            <a href="#!" class="btn btn-small" id="asignados_me" data-key="{{auth()->user()->nombres.' '.auth()->user()->apellidos}}">Mis asignados</a>
         </div>
-        <div >
-            <a href="{{route('equipo.create')}}" class="btn btn-small"><i class="right material-icons">add</i>Nuevo</a>
+        <div>
+            <a  href="{{route('equipo.create')}}" class="btn btn-small"><i class="right material-icons">add</i>Nuevo</a>
         </div>
+    </div>
+
+    <div class="input-field col s12 m6 center">
+      <input placeholder="Numero de serie" id="serie" type="text" class="validate">
+      <label for="serie">No. Serie / SN</label>
+    </div>
+    <div class="input-field col s12 m6 center">
+      <input placeholder="Numero de ticket" id="ticket" type="number" class="validate">
+      <label for="serie">No.Ticket</label>
     </div>
     @include('partials.divider')
     {{-- Tabla de Los equipos en cola.... --}}
@@ -52,7 +61,7 @@
 <script>
     $(document).ready(function () {
         $.ajax({
-      //   Vamos a consultar la data de equipos.
+      //   {{--Vamos a consultar la data de equipos.--}}
         url:"{{route('equipo.showEquipos')}}",
         type: 'get',
         dataType: 'json',
@@ -62,33 +71,48 @@
           let { data } = resp.equipos;
           let { tecnicos } = resp.tecnicos;
           console.log(resp.equipos);
-          // console.log(resp.tecnicos);
           var tablaArmas = $('#table-equipos').addClass('nowrap').DataTable({
             responsive: true,
             "pageLength": 5,
             "order": [ 0, 'desc' ],
             data: resp.equipos,
             columns: [
-              // {data: 'servicios',render: function (data){
-              //   let descripcion;
-              //   data.map(el=>{
-              //     descripcion = el.id_tecnico_asignado;
-              //   } )
-              //   return descripcion;
-              // }}, // Tecnico ingresa
-              {data: 'id_equipo'}, //Tecnico asignado
+              {data: 'servicios',render: function (data){
+                let descripcion;
+                let ticket;
+                data.map(el=>{
+                  ticket = el.id_ticket;
+                })
+                // {{-- El tecnico reviso siempre es obligatorio --}}
+                resp.tickets.map(elem=>{
+                  if(elem.id_ticket == ticket){
+                    descripcion = elem.id_tecnico_revisa;
+                  }
+                })
+
+                let nombres, apellidos;
+                resp.tecnicos.map(element => {
+                  if(element.id_usuario == descripcion){
+                    nombres = element.nombres;
+                    apellidos = element.apellidos;
+                  }
+                });
+                descripcion = `<i class=" material-icons left">person</i>${nombres} ${apellidos}`;
+
+                return descripcion;
+              }}, // {{--Tecnico ingresa--}}
               {data: 'servicios',render: function (data){
                 let descripcion;
 
                 data.map(el=>{
                   if(el.id_tecnico_asignado == null){
-                    descripcion = 'Sin asignar';
+                    descripcion = `<i class=" material-icons left">person</i> Sin asignar`;
                   }else{
                     descripcion = el.id_tecnico_asignado;
                   }
                 })
 
-                if(descripcion != 'Sin asignar'){
+                if(descripcion != `<i class=" material-icons left">person</i> Sin asignar`){
                   let nombres, apellidos;
                   resp.tecnicos.map(element => {
                     if(element.id_usuario == descripcion){
@@ -96,66 +120,29 @@
                       apellidos = element.apellidos;
                     }
                   });
-                  descripcion = ` ${nombres} ${apellidos}`;
+                  descripcion = `<i class=" material-icons left">person</i>${nombres} ${apellidos}`;
                 }
 
                 return descripcion;
-              }}, //Tecnico asignado
+              }}, //{{--Tecnico asignado--}}
               {data: 'id_tipo_equipo',render: function(data){
                 let descripcion;
                 resp.tipo_equipo.map((tipo)=>{
-                    if(data === tipo.id_item){descripcion = tipo.descripcion};
+                    if(data === tipo.id_item){descripcion = `<i class=" material-icons left">devices</i> ${tipo.descripcion}`};
                 });
                 return descripcion;
-              }}, // Tipo
-              {data: 'numero_serie'}, // Serie
-              {data: 'marca'}, // Marca
+              }}, // {{--Tipo--}}
+              {data: 'numero_serie'}, // {{--Serie--}}
+              {data: 'marca'}, // {{--Marca--}}
               {data: 'id_estado_equipo',render: function(data){
                 let descripcion;
                 resp.estado_equipo.map((estado)=>{
                     if(data === estado.id_item){descripcion = estado.descripcion};
                 });
                 return descripcion;
-              }}, //Estado
-              {data: 'dependencia_policial'}, //Estado
+              }}, 
+              {data: 'dependencia_policial'},
               {data: null}, //Acciones
-            //   {data: 'id_tipo_arma',render: function (data){
-            //     let descripcion;
-            //     resp.tipo_arma.map((tipo)=>{
-            //       if(data === tipo.id_item){descripcion = tipo.descripcion};
-            //     });
-            //     return descripcion;
-            //   }},
-            //   {data: 'id_marca_arma', render: function (data){
-            //       let descripcion;
-            //       resp.marca_arma.map((tipo)=>{
-            //         if(data === tipo.id_item){descripcion = tipo.descripcion};
-            //       });
-            //       return descripcion;
-            //     }},
-            //   {data: 'modelo_arma'},
-            //   {data: 'id_calibre', render: function (data){
-            //     let descripcion;
-            //     resp.calibre_arma.map((tipo)=>{
-            //       if(data === tipo.id_item){descripcion = tipo.descripcion}
-            //     });
-            //     if(descripcion == null){
-            //       return null;
-            //     }else{
-            //       return descripcion;
-            //     }
-            //   }},
-            //   {data: 'licencia'},
-            //   {data: 'tenencia'},
-            //   {data: 'registro'},
-            //   {data: 'id_estatus_arma',render: function (data){
-            //       let descripcion;
-            //       resp.estado_arma.map((tipo)=>{
-            //         if(data === tipo.id_item){descripcion = tipo.descripcion}
-            //       });
-            //       return descripcion;
-            //     }},
-            //   null
             ],
             // select: true,
             dom: 'Brtip',
@@ -193,25 +180,18 @@
             // "bDestroy": true
           });
 
-        //   $('#filter-registro').on('keyup',function (){
-        //     tablaArmas.columns(7).search(this.value).draw(); // Columna 8 -> registro arma
-        //   });
+          $('#asignados_me').on('click',function (event){
+            // console.log();
+            tablaArmas.columns(1).search($(this).data('key')).draw(); // Columna 8 -> registro arma
+          });
 
-        //   $('#tipo_arma').on('change',function (){
-        //     let tipo_arma = $('#tipo_arma option:selected').text();
-        //     if(tipo_arma == "N/I"){
-        //       tipo_arma = "";
-        //     }
-        //     tablaArmas.columns(1).search(tipo_arma).draw();
-        //   });
+          $('#allEquipos').on('click',function(){
+            tablaArmas.columns().search('').draw();            
+          });
 
-        //   $('#estado_arma').on('change',function (){
-        //     let estado_arma = $('#estado_arma option:selected').text();
-        //     if(estado_arma == "N/I"){
-        //       estado_arma = "";
-        //     }
-        //     tablaArmas.columns(8).search(estado_arma).draw(); //Columna 8 -> estado arma
-        //   });
+          $('#serie').on('keyup',function (){
+            tablaArmas.columns(3).search(this.value).draw(); // Columna 8 -> registro arma
+          });
 
         },
         error: function (response){

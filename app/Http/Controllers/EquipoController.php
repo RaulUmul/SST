@@ -144,8 +144,17 @@ class EquipoController extends Controller
         // $equipos = Equipo::with(['servicios'=> function ($servicio){
         //     $servicio->latest('id_ticket')->with('ticket')->get();
         // }])->get();
-        $equipos = Equipo::with('servicios')->get();
-
+        $equipos = Equipo::with(['servicios'=>function($query){
+            $query->orderBy('id_ticket','asc'); //Obtenemos el ultimo ticket
+        }])->get();
+        $tickets = Ticket::all();
+        // foreach($equipos as $equipo){
+            // foreach($equipo->servicios as $servicio){
+                // $tickets[] = Ticket::where('id_ticket',$servicio->id_ticket)->first();
+            // }
+        // }
+        
+        // dd($tickets);
         $tecnicos = User::whereJsonContains('roles',3)->get();
 
         $estado_equipo = Item::where('id_categoria',3)->get();
@@ -154,7 +163,8 @@ class EquipoController extends Controller
             'equipos'=>$equipos,
             'estado_equipo'=>$estado_equipo,
             'tipo_equipo'=>$tipo_equipo,
-            'tecnicos'=>$tecnicos
+            'tecnicos'=>$tecnicos,
+            'tickets'=>$tickets
         ];
     }
 
