@@ -73,7 +73,7 @@
     <div class="container" style="min-height: 100vh; display: flex;justify-content: center; align-items: center">
         <div class="contenedor" style="background-color: white;padding:50px; border-radius: 4px ; border: 1px solid black;display: flex; flex-direction: column">
             <div class="logotipo center-align" style="">
-                <img src="https://sistemas.pnc.gob.gt/sispe/images/logoPNC.png" alt=""
+                <img src="{{asset('img/logoPNC.png')}}" alt=""
                 height="125px">
                 <img src="" alt="">
             </div>

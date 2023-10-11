@@ -35,9 +35,14 @@ class QrCodeController extends Controller
     // Ya esta el buen QR creado ahora tengo que almacenarlo y recuperarlo
     public function create(Request $request){
         $ruta = $request->ruta.'?id_equipo='.$request->id_equipo;
-        $nombre_archivo = 'qr_equipo_'.$request->id_equipo.'.svg';
+        $nombre_archivo = 'qr_equipo_'.$request->id_equipo.'.png';
         $nombre_hash = \Hash::make($nombre_archivo);
-        $qr = QrCode::generate($ruta);
+        $qr = \QrCode::format('png')
+        // ->merge(public_path('img/logoPNC.png'), 0.3, true)
+        ->size(5000)
+        // ->backgroundColor(255, 255, 0)
+        // ->color(255, 0, 127)
+        ->generate($ruta);
         // Guardamos el qr.
         \Storage::disk('qrcode')->put($nombre_archivo,$qr);
         // Ya guardado, almacenamos en la tabla de Archivo.
@@ -55,6 +60,15 @@ class QrCodeController extends Controller
     // 
     public function show(){
 
+    }
+
+    public function downloadQR(Request $request){
+        $archivo = json_decode($request->archivo);
+        // return ;
+        // $ruta = 'https://www.google.com';
+        // $fileDest = storage_path('app/qrcode.svg'); 
+        // QrCode::size(400)->generate($ruta, $fileDest);
+        return response()->download(storage_path('app/qrcodes/'."$archivo->nombre"));
     }
 
     public function search(){
