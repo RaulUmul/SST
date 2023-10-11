@@ -74,7 +74,7 @@
           var tablaArmas = $('#table-equipos').addClass('nowrap').DataTable({
             responsive: true,
             "pageLength": 5,
-            "order": [ 0, 'desc' ],
+            // "order": [ 5, 'asc' ],
             data: resp.equipos,
             columns: [
               {data: 'servicios',render: function (data){

@@ -43,7 +43,7 @@ VALUES
   (7,'Television',1),
   (8,'Radio',1),
   (9,'Dron',1),
-  (10,'No incluido',1),
+  (10,'Otro',1),
   (11,'Mantenimiento',2),
   (12,'Correccion',2),
   (13,'Dictamen',2),

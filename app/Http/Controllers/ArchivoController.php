@@ -54,7 +54,7 @@ class ArchivoController extends Controller
                     $servicio = new Servicio();
                     $servicio->id_ticket = $request->id_ticket;
                     $servicio->id_equipo = $request->id_equipo;
-                    // $servicio->id_tecnico_asignado = $request->id_equipo;
+                    $servicio->id_tecnico_asignado = auth()->user()->id_usuario;
                     $servicio->id_tipo_servicio = 13; // Automatizar
                     $servicio->fecha_inicio = $fecha_guardada;
                     $servicio->fecha_finalizacion = $fecha_guardada;

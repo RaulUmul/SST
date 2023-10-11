@@ -50,6 +50,7 @@ Route::controller(EquipoController::class)->group(function(){
 Route::controller(ServicioController::class)->group(function(){
   Route::get('/equipo/servicios','index')->name('servicio.index')->middleware('auth');
   Route::get('/equipo/servicios/update','update')->name('servicio.update')->middleware('auth');
+  Route::get('/equipo/servicios/asignar_tecnico','asignarTecnico')->name('servicio.asignarTecnico');
 });
 
 // Control de QR code
@@ -72,6 +73,7 @@ Route::controller(UsuariosController::class)->group(function(){
   Route::get('/consulta_usuario','index')->name('usuario.index')->middleware('role:Tecnico Admon');
   Route::get('/buscar_usuario','buscar')->name('usuario.search')->middleware('role:Tecnico Admon');
   Route::post('/actualizar_roles','update_roles')->name('update.roles')->middleware('role:Tecnico Admon');
+  Route::post('/key_restart','restablecerKey')->name('update.key')->middleware('role:Tecnico Admon');
 });
 
 

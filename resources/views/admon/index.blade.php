@@ -69,6 +69,29 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col s12 center-align">
+            <p><strong>Restablecer contraseña</strong></p>
+        </div>
+        <form action="{{route('update.key')}}" method="POST">
+            @csrf
+            <div class="col s12">
+                <input id="cui_keyRestart" type="hidden" name="id_user">
+                <div class="input-field col s12">
+                    <input name="password" id="password" type="password" class="validate" required>
+                    <label for="password">Contraseña Nueva</label>
+                </div>
+            </div>
+            <div class="col s12 center-align">
+                <button id="restablecer_pw" type="submit" class="btn disabled">
+                    Restablecer
+                    <i class="material-icons right">restart_alt</i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+
 
 @endsection
 
@@ -90,6 +113,7 @@
                     success: function (response) {
                         // console.log(response);
                         $('#enviarRoles').removeClass('disabled');
+                        $('#restablecer_pw').removeClass('disabled');
                         $('#notecnico').attr('checked','checked')
                         $('#noadmon').attr('checked','checked')
                         
@@ -109,6 +133,7 @@
                                 });
                             }
                         $('#id_usuario').val(response.usuario.id_usuario);
+                        $('#cui_keyRestart').val(response.usuario.id_usuario);
                         
                     },
                     error: function(response){

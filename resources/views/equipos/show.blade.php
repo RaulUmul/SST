@@ -47,12 +47,16 @@
                  <p>Marca:</p> 
                  <p>Numero de serie:</p> 
                  <p>Fecha ingreso:</p> 
+                 <p>Dependencia</p> 
+                 <p>Telefono contacto:</p> 
               </div>
               <div class="col s6 right-align">
                 <p><strong> @foreach ($tipo_equipo as $tipo) @if($tipo->id_item == $equipo[0]->id_tipo_equipo ) {{$tipo->descripcion}} @endif @endforeach </strong></p>
                 <p><strong>{{$equipo[0]->marca}}</strong></p>
                 <p><strong>{{$equipo[0]->numero_serie}}</strong></p>
                 <p><strong>{{date('d/m/Y',strtotime($last_ticket->fecha_creacion))}}</strong></p>
+                <p><strong>{{$equipo[0]->dependencia_policial}}</strong></p>
+                <p><strong>{{$last_ticket->telefono_contacto}}</strong></p>
               </div>
             </div>
           </div>

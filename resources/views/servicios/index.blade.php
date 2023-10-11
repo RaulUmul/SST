@@ -120,17 +120,50 @@
   <input type="hidden" name="id_equipo" value="{{$data['id_equipo']}}">
   <button type="submit" class="btn" style="display: none"></button>
 </form>
+
+<div id="modal_asignar_tecnico" class="modal" style="height: 50vh;">
+  <div class="modal-content center">
+    <div class="row">
+      <div class="col s12">
+        <h4>Asignar Tecnico</h4>
+      </div>
+      <form action="{{route('servicio.asignarTecnico')}}">
+        <input type="hidden" name="servicios" value="{{json_encode($servicio)}}">
+      <div class="input-field col s12 ">
+        {{-- <i class="material-icons prefix">person_outline</i> --}}
+        <select name="tecnico_asignado" id="tecnico_asignado" class="materialSelect">
+            <option value="{{null}}" disabled selected>Selecciona</option>
+            @foreach ($tecnicos as $key => $value)
+            <option value="{{$value->id_usuario}}">{{$value->nombres.' '.$value->apellidos}}</option>
+            @endforeach
+        </select>
+        <label>Tecnico a asignar</label>
+      </div>
+      <div class="col s12" style="position:relative; top: 8rem; ">
+        <button type="submit" class="btn" >
+          Asignar
+          <i class="material-icons right">check</i>
+        </button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 @endsection
 
 @push('scripts')
     <script>
 
-
+    $('#modal_asignar_tecnico').modal({dismissible:false});
 
         let servicio_actual = @json($data);
         let servicio = @json($servicio);
 
         if(servicio_actual.id_tecnico_asignado == null){
+          // Debemos de cargar el modal y no dejar pasarlo.
+          $('#modal_asignar_tecnico').modal('open');
+          $('select').formSelect();
           console.log('No existe tecnico asignado');
         }
         

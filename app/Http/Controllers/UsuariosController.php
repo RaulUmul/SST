@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Rol;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
 
 class UsuariosController extends Controller
 {
@@ -81,6 +83,13 @@ class UsuariosController extends Controller
     //     }
     //     return $request;
     // }
+
+    public function restablecerKey(Request $request){
+        $user = User::find($request->id_user);
+        $user->password = Hash::make($request->password);
+        $user->save();
+        return back()->with('success','Contraseña restablecida');
+    }
 
     
 }

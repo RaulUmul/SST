@@ -47,12 +47,19 @@ class EquipoController extends Controller
                     break;
             }
         }
+
+        //Mandamos a traer el ID del ticket actual, pero solo para representarlo.
+        //Ya que es autoincrementable.
+        $currentId = DB::table('sistec.ticket')->max('id_ticket');
+        $newId = $currentId + 1;
+
         return view('equipos.create',compact(
             'tecnicos',
             'tipo_equipo',
             'mantenimiento',
             'correccion',
-            'dictamen'
+            'dictamen',
+            'newId'
         ));
     }
     
@@ -146,7 +153,7 @@ class EquipoController extends Controller
         // }])->get();
         $equipos = Equipo::with(['servicios'=>function($query){
             $query->orderBy('id_ticket','asc'); //Obtenemos el ultimo ticket
-        }])->get();
+        }])->orderBy('id_equipo','desc')->get();
         $tickets = Ticket::all();
         // foreach($equipos as $equipo){
             // foreach($equipo->servicios as $servicio){

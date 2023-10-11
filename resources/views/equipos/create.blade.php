@@ -53,9 +53,9 @@
                         <div class="col s12 m6 labelMod ">
                             <label for="numero_ticket">Ticket No.</label>
                         </div>
-                        <div class="input-field col s12 m6 right-align">
-                            30199
-                            <input id="numero_ticket" name="numero_ticket" type="hidden" class="validate" value="30199">
+                        <div class="input-field col s12 m6 center-align">
+                            <strong>{{$newId}}</strong>
+                            {{-- <input id="numero_ticket" name="numero_ticket" type="hidden" class="validate" value="30199"> --}}
                         </div>
                     </div>
                     <div class="row">

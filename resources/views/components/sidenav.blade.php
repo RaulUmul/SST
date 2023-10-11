@@ -56,7 +56,7 @@
                 </form>
             </div>
         </li>
-        <li class="row" style="max-width:auto;">
+        <li class="row">
             <div class="col s12">
                 <table id="table-equipos-sidenav">
                     <thead>
@@ -94,7 +94,7 @@
                     $('#table-equipos-sidenav thead').remove();
                 },
                 "pageLength": 3,
-                "order": [ 0, 'desc' ],
+                // "order": [ 0, 'desc' ],
                 data: resp.equipos,
                 columns: [
                 {data: 'id_tipo_equipo',render: function(data){
@@ -109,6 +109,7 @@
                 ],
                 // select: true,
                 dom: '',
+                responsive: true,
                 columnDefs:[
                     {target: 1 ,responsivePriority: 1},
                     // {target: 3 ,responsivePriority: 2},

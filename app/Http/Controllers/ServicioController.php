@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Servicio;
 use App\Models\Archivo;
+use App\Models\User;
 use App\Services\EquipoService;
 use DateTime;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class ServicioController extends Controller
     public function index(Request $request){
         // Desde aca enviaremos el historial de servicios si existiera.
         $servicio_actual = Servicio::find($request->servicio_actual['id_servicio']);
-
+        $tecnicos = User::whereJsonContains('roles',3)->get();
         // Enviamos en caso de existir el archivo cargado y tenemos que indicar que ya existe dictamen
         // Manejemolo como el de sae no? -> Si me parece
         
@@ -22,7 +23,7 @@ class ServicioController extends Controller
         $archivo = Archivo::where('id_equipo',$request->servicio_actual['id_equipo'])
         ->where('id_tipo_archivo',26)
         ->first();
-        return view('servicios.index',['data'=>$servicio_actual,'servicio'=>$request->servicio,'archivo' => $archivo]);
+        return view('servicios.index',['data'=>$servicio_actual,'servicio'=>$request->servicio,'archivo' => $archivo],compact('tecnicos'));
     }
 
     public function update(Request $request,EquipoService $equipoService){
@@ -80,6 +81,17 @@ class ServicioController extends Controller
         }
 
         // return response()->json(['servicio_actual'=>$servicio_actualizar,'servicio'=>$servicio],200);
+    }
+
+    public function asignarTecnico(Request $request){
+        $servicios = json_decode($request->servicios);
+        foreach ($servicios as $servicio) {
+           $asginacion = Servicio::find($servicio->id_servicio);
+           $asginacion->id_tecnico_asignado = $request->tecnico_asignado;
+           $asginacion->save();
+        }
+
+        return back()->with('success','Tecnico asignado');
     }
 
 }
