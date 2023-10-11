@@ -18,13 +18,12 @@
                     <div>
                         <p>Codigo QR para su impresion</p>
                     </div>
-                    <img src="data:image/svg+xml;base64,{{base64_encode(\Storage::disk('qrcode')->get($archivo->nombre))}}"
-                    type="data:image/svg+xml"
+                    <img src="data:image;base64,{{base64_encode(\Storage::disk('qrcode')->get($archivo->nombre))}}"
                     width="20%"
                     >
                 </div>
                 <div class="col s12 center-align">
-                    <a href="#!" class="btn">Imprimir <i class="material-icons left">print</i></a>
+                    <a href="{{route('qr.download',['archivo'=>json_encode($archivo)])}}" class="btn">Imprimir <i class="material-icons left">print</i></a>
                 </div>
 
                 

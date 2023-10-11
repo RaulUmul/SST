@@ -48,7 +48,7 @@ Route::controller(EquipoController::class)->group(function(){
 // Control de Servicios por equipo.
 
 Route::controller(ServicioController::class)->group(function(){
-  Route::get('/equipo/servicios','index')->name('servicio.index')->middleware('auth');
+  Route::get('/equipo/servicios','index')->name('servicio.index');
   Route::get('/equipo/servicios/update','update')->name('servicio.update')->middleware('auth');
   Route::get('/equipo/servicios/asignar_tecnico','asignarTecnico')->name('servicio.asignarTecnico');
 });
@@ -60,6 +60,7 @@ Route::controller(QrCodeController::class)->group(function(){
   Route::get('/qrcrear','create')->name('qr.create');
   Route::get('/qrgenerado','show')->name('qr.show');
   Route::get('/qrsearch','search')->name('qr.search');
+  Route::get('/qrdownload','downloadQR')->name('qr.download');
 });
 // Control de archivos tipo Dictamen / Oficio
 Route::controller(ArchivoController::class)->group(function(){

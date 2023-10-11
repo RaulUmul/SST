@@ -34,18 +34,18 @@ class EquipoService{
       if($equipo->doesntExist()){
         $equipo = new Equipo();
           $equipo->id_tipo_equipo = $dato['tipo_equipo'];
-          $equipo->numero_serie = $dato['numero_serie'];
-          $equipo->marca = $dato['marca'];
+          $equipo->numero_serie = strtoupper($dato['numero_serie']);
+          $equipo->marca = strtoupper($dato['marca']);
           // $equipo->modelo = $dato['modelo'];
-          $equipo->accesorios = $dato['accesorios'];
-          $equipo->dependencia_policial = $request->dependencia_policial;
+          $equipo->accesorios = strtoupper($dato['accesorios']);
+          $equipo->dependencia_policial = strtoupper($request->dependencia_policial);
           $equipo->id_estado_equipo = 14;
         $equipo->save();
         // $equiposAlmacenados = Arr::add($equiposAlmacenados,$key,$equipo);
       }else if($equipo->exists()){
         $equipo = Equipo::find($equipo->first()->id_equipo);
-        $equipo->accesorios = $dato['accesorios'];
-        $equipo->dependencia_policial = $request->dependencia_policial;
+        $equipo->accesorios = strtoupper($dato['accesorios']);
+        $equipo->dependencia_policial = strtoupper($request->dependencia_policial);
         $equipo->id_estado_equipo = 14;
         $equipo->save();
         // $equiposAlmacenados = Arr::add($equiposAlmacenados,$key,$equipo);
