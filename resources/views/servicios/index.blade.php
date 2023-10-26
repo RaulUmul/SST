@@ -6,6 +6,7 @@
  {{-- El texto del enlace que registraTimeStamp(this)-> "Iniciar " o "Finalizar " <-Debe contener un espacio. --}}
 {{-- @dd($data) --}}
 <form action="" id="mantenimiento">
+  @csrf
   <div class="row container">
     <div class="col s12">
       <p>Mantenimiento</p>
@@ -24,6 +25,7 @@
 </form>
 {{-- Form Correccion --}}
 <form action="" id="correccion">
+  @csrf
   <div class="row container">
     <div class="col s12">
       <p>Correccion</p>
@@ -44,7 +46,6 @@
 @empty($archivo)
     
   <form action="{{route('archivo.dictamen')}}" method="post" id="dictamen" enctype="multipart/form-data">
-
     @csrf
     <input type="hidden" name="id_equipo" value="{{$data->id_equipo}}">
     <input type="hidden" name="id_ticket" value="{{$data->id_ticket}}">
@@ -59,7 +60,7 @@
         <div class="file-field input-field">
           <div class="btn">
             <span><i class="left material-icons">upload_file</i>Adjuntar</span>
-            <input type="file" name="file" id="file">
+            <input type="file" name="file" id="file" accept=".pdf">
           </div>
           <div class="file-path-wrapper">
             <input class="file-path validate" type="text">
@@ -93,7 +94,7 @@
       <div class="file-field input-field">
         <div class="btn">
           <span><i class="left material-icons">upload_file</i>Adjuntar</span>
-          <input type="file" name="file" id="file" >
+          <input type="file" name="file" id="file" accept=".pdf">
         </div>
         <div class="file-path-wrapper">
           <input class="file-path validate" type="text" value="{{$archivo->nombre}}">
@@ -117,6 +118,7 @@
 
 {{-- Cada que finaliza, vamos a redirigirlo al form de detalle del equipo--}}
 <form action="{{route('equipo.show')}}" id="detalleEquipo">
+  @csrf
   <input type="hidden" name="id_equipo" value="{{$data['id_equipo']}}">
   <button type="submit" class="btn" style="display: none"></button>
 </form>
@@ -128,6 +130,7 @@
         <h4>Asignar Tecnico</h4>
       </div>
       <form action="{{route('servicio.asignarTecnico')}}">
+        @csrf
         <input type="hidden" name="servicios" value="{{json_encode($servicio)}}">
       <div class="input-field col s12 ">
         {{-- <i class="material-icons prefix">person_outline</i> --}}
