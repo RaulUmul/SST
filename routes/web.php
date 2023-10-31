@@ -6,6 +6,7 @@ use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\ArchivoController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\ReportesController;
 use App\Http\Controllers\AuthController;
 
 
@@ -77,4 +78,9 @@ Route::controller(UsuariosController::class)->group(function(){
   Route::post('/key_restart','restablecerKey')->name('update.key')->middleware('role:Tecnico Admon');
 });
 
+// Reportes
+Route::controller(ReportesController::class)->group(function(){
+  Route::get('/reportes','index')->name('reportes.index')->middleware('role:Tecnico Admon, Tecnico');
+  Route::get('/reportes/servicio_promedio','servicioPromedio')->name('reporte.servicioPromedio');
+});
 

@@ -22,7 +22,7 @@
         <li class="hide-on-large-only"><a href="{{route('equipo.index')}}"><i class="material-icons">devices</i>Equipos</a></li>
         {{-- Aqui entrar un middleware para mostrar/ocultar el acceso --}}
         <li class=""><a href="{{route('usuario.index')}}"><i class="material-icons">manage_accounts</i>Administracion de Usuarios</a></li>
-        <li class=""><a href="#"><i class="material-icons">summarize</i>Reportes</a></li>
+        <li class=""><a href="{{route('reportes.index')}}"><i class="material-icons">summarize</i>Reportes</a></li>
         {{-- Termina la autorizacion --}}
         <li class="hide-on-large-only">
             <div class="divider modDivider"></div>
@@ -88,7 +88,7 @@
             success: function (resp) {
             let { data } = resp.equipos;
             let { tecnicos } = resp.tecnicos;
-            console.log(resp.equipos);
+            // console.log(resp.equipos);
             var tablaEquipoSidenav = $('#table-equipos-sidenav').addClass('nowrap').DataTable({
                 // responsive: true,
                 "drawCallback": function( settings ) {
