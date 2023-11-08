@@ -3,6 +3,7 @@
 @section('content')
 
 <div class="row">
+  {{-- PROMEDIO --}}
   <div class="col s12 m6">
     <canvas id="myChartPromedio"></canvas>
     <div class="input-field col s12">
@@ -15,9 +16,66 @@
       <label>Filtrar por Tecnico</label>
     </div>
   </div>
+  {{-- TRABAJOS REALIZADOS --}}
   <div class="col s12 m6">
     <canvas id="myChartTrabajados"></canvas>
+    <div class="input-field col s12 m6 l4">
+      <select id="anio">
+        <option value="{{null}}" disabled>Año</option>
+        <option value="2023"" selected>2023</option>
+      </select>
+      <label>Año</label>
+    </div>
+    <div class="input-field col s12 m6 l4">
+      <select id="fecha_inicio">
+        <option value="{{null}}" disabled selected>Fecha inicio</option>
+        <option value="01">Enero</option>
+        <option value="02">Febrero</option>
+        <option value="03">Marzo</option>
+        <option value="04">Abril</option>
+        <option value="05">Mayo</option>
+        <option value="06">Junio</option>
+        <option value="07">Julio</option>
+        <option value="08">Agosto</option>
+        <option value="09">Septiembre</option>
+        <option value="10">Octubre</option>
+        <option value="11">Noviembre</option>
+        <option value="12">Diciembre</option>
+      </select>
+      <label>Fecha inicio</label>
+    </div>
+    <div class="input-field col s12 m6 l4">
+      <select id="fecha_fin">
+        <option value="{{null}}" disabled selected>Fecha final</option>
+        <option value="01">Enero</option>
+        <option value="02">Febrero</option>
+        <option value="03">Marzo</option>
+        <option value="04">Abril</option>
+        <option value="05">Mayo</option>
+        <option value="06">Junio</option>
+        <option value="07">Julio</option>
+        <option value="08">Agosto</option>
+        <option value="09">Septiembre</option>
+        <option value="10">Octubre</option>
+        <option value="11">Noviembre</option>
+        <option value="12">Diciembre</option>
+      </select>
+      <label>Fecha fin</label>
+    </div>
+    <div class="input-field col s12">
+      <select id="tecnico_trabajo">
+        <option value="{{null}}" disabled selected>Tecnico</option>
+        @foreach ($tecnicos as $key => $value)
+        <option value="{{$value->id_usuario}}">{{$value->nombres.' '.$value->apellidos}}</option>
+        @endforeach
+      </select>
+      <label>Filtrar por Tecnico</label>
+    </div>
   </div>
+</div>
+
+<div class="row">
+
 </div>
 
 @endsection
@@ -71,7 +129,7 @@
 
     $('#tecnico_promedio').on('change',function(){
       let tecnico = $(this).val();
-      myChart.destroy();
+      myChartPromedio.destroy();
       $.ajax({
         type: 'get',
         url: "{{route('reporte.servicioPromedio')}}",
@@ -111,6 +169,39 @@
     })
 
 
+    $('#fecha_inicio').on('change',function(){
+      let fecha_inicio = $(this).val();
+      let fecha_final = $('#fecha_fin').val();
+      myChartTrabajados.destroy();
+      $.ajax({
+        type: 'get',
+        url: "{{route('reporte.totalTrabajados')}}",
+        data: {fecha_inicio,fecha_final}, //Aqui enviamos segun el select
+        dataType: 'text',
+        success: function (response) {
+          // Llamamos a la funcion totalTrabajados
+          console.log(response);
+        }
+      });
+    })
+
+    $('#fecha_fin').on('change',function(){
+      let fecha_inicio = $('#fecha_inicio').val();
+      let fecha_final = $(this).val();
+      myChartTrabajados.destroy();
+      $.ajax({
+        type: 'get',
+        url: "{{route('reporte.totalTrabajados')}}",
+        data: {fecha_inicio,fecha_final}, //Aqui enviamos segun el select
+        dataType: 'text',
+        success: function (response) {
+          // Llamamos a la funcion totalTrabajados
+          console.log(response);
+        }
+      });
+    })
+
+
 
     // Esto estara en una funcion que renderizara cada que lo invoquen con los datos necesarios. 
 
@@ -134,6 +225,7 @@
           }
         });
     }
+
    totalTrabajados()
     function totalTrabajados(){
       myChartTrabajados = new Chart(ctx_trabajados,{
@@ -142,7 +234,7 @@
           labels: ['Enero','Febrero','Marzo'],
           datasets: [{
               label: 'General',
-              data: [{x: 'Febrero',y:20},{x: 'Marzo',y:61}]
+              data: [{x:'Enero',y:20},{x: 'Enero',y:20},{x: 'Marzo',y:61}]
             }]
           },
         options: {

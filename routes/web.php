@@ -82,5 +82,6 @@ Route::controller(UsuariosController::class)->group(function(){
 Route::controller(ReportesController::class)->group(function(){
   Route::get('/reportes','index')->name('reportes.index')->middleware('role:Tecnico Admon, Tecnico');
   Route::get('/reportes/servicio_promedio','servicioPromedio')->name('reporte.servicioPromedio');
+  Route::get('/reportes/total_trabajados','totalTrabajados')->name('reporte.totalTrabajados');
 });
 
